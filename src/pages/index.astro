@@ -21,6 +21,13 @@ import AuthLayout from "../layouts/AuthLayout.astro";
         placeholder="contraseña"
         required
       />
+
+      <!-- SHOW PASSWORD -->
+      <label for="show-password">
+        <input type="checkbox" id="show-password" />
+        Mostrar contraseña
+      </label>
+
       <button type="submit">Iniciar sesion</button>
     </form>
   </div>
@@ -65,5 +72,18 @@ import AuthLayout from "../layouts/AuthLayout.astro";
     }
 
     window.location.href = "/products";
+  });
+
+  const passwordInput = document.getElementById("password") as HTMLInputElement;
+  const showPasswordCheckbox = document.getElementById(
+    "show-password"
+  ) as HTMLInputElement;
+
+  showPasswordCheckbox?.addEventListener("change", (e) => {
+    if (!passwordInput) return;
+
+    showPasswordCheckbox.checked
+      ? (passwordInput.type = "text")
+      : (passwordInput.type = "password");
   });
 </script>
