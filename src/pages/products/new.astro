@@ -90,6 +90,7 @@ import DashLayout from "../../layouts/DashLayout.astro";
 </style>
 
 <script>
+  import { isInputError } from "astro/actions/runtime/entrypoints/server.js";
   import { actions } from "astro:actions";
 
   const form = document.querySelector("form");
@@ -105,19 +106,30 @@ import DashLayout from "../../layouts/DashLayout.astro";
 
     const { data, error } = await actions.products.create(formData);
 
+    if (error && isInputError(error)) {
+      const plainArray = Object.entries(error.fields).map(
+        ([field, message]) => {
+          return `${field}: ${message}`;
+        }
+      );
+
+      alert("Campos con error:\n" + plainArray.join("\n"));
+
+      return;
+    }
+
     if (error) {
-      console.error(error);
       alert("Ocurrió un error al crear el producto");
       return;
     }
 
-    alert("Producto creado correctamente");
+    alert(data?.message);
     window.location.href = "/products";
   });
 
   // Input formatting for price field
   const priceInput = document.querySelector(
-    "#price-input",
+    "#price-input"
   ) as HTMLInputElement | null;
 
   if (priceInput) {
@@ -129,7 +141,7 @@ import DashLayout from "../../layouts/DashLayout.astro";
 
       if (value) {
         e.target.value = parseInt(value, 10).toLocaleString("es-CO", {
-          maximumFractionDigits: 0,
+          maximumFractionDigits: 0
         });
       } else {
         e.target.value = "";
