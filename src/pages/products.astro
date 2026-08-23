@@ -4,8 +4,6 @@ import { turso } from "../turso";
 import formatCurrency from "../utils";
 
 const { rows } = await turso.execute("SELECT * FROM products");
-
-console.log(rows);
 ---
 
 <DashLayout>
@@ -13,38 +11,42 @@ console.log(rows);
 
   <a href="/products/new" class="link-btn">Nuevo producto</a>
 
-  <div class="table-wrapper">
-    <table border="1">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Marca</th>
-          <th>IMEI</th>
-          <th>Precio</th>
-          <th>Stock</th>
-          <th>Color</th>
-          <th>Almacenamiento</th>
-          <th>Estado</th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          rows.map((row) => (
+  {
+    rows.length === 0 ? (
+      <p>No hay productos registrados.</p>
+    ) : (
+      <div class="table-wrapper">
+        <table border="1">
+          <thead>
             <tr>
-              <td>{row.name}</td>
-              <td>{row.brand}</td>
-              <td>{row.imei}</td>
-              <td>{formatCurrency(Number(row.price))}</td>
-              <td>{row.stock}</td>
-              <td>{row.color}</td>
-              <td>{row.storage}</td>
-              <td>{row.status}</td>
+              <th>Nombre</th>
+              <th>Marca</th>
+              <th>IMEI</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Color</th>
+              <th>Almacenamiento</th>
+              <th>Estado</th>
             </tr>
-          ))
-        }
-      </tbody>
-    </table>
-  </div>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr>
+                <td>{row.name}</td>
+                <td>{row.brand}</td>
+                <td>{row.imei}</td>
+                <td>{formatCurrency(Number(row.price))}</td>
+                <td>{row.stock}</td>
+                <td>{row.color}</td>
+                <td>{row.storage}</td>
+                <td>{row.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
 </DashLayout>
 
 <style>
