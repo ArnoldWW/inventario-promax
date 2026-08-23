@@ -1,0 +1,139 @@
+---
+import DashLayout from "../../layouts/DashLayout.astro";
+---
+
+<DashLayout>
+  <h2>Nuevo producto</h2>
+
+  <form action="post" class="new-p-form">
+    <label for="name">Nombre</label>
+    <input
+      type="text"
+      id="name"
+      name="name"
+      placeholder="Nombre del producto"
+    />
+
+    <label for="brand">Marca</label>
+    <select name="brand" id="brand">
+      <option value="apple">Apple</option>
+      <option value="samsung">Samsung</option>
+      <option value="otro">Otro</option>
+    </select>
+
+    <label for="imei">IMEI</label>
+    <input
+      type="number"
+      id="imei"
+      name="imei"
+      pattern="[0-9]*"
+      placeholder="IMEI del producto"
+    />
+
+    <label for="price-input">Precio</label>
+    <input
+      type="text"
+      id="price-input"
+      name="price"
+      inputmode="numeric"
+      placeholder="$1.000.000"
+    />
+
+    <label for="stock">Stock</label>
+    <input
+      type="number"
+      id="stock"
+      name="stock"
+      placeholder="Stock del producto"
+    />
+
+    <label for="color">Color</label>
+    <input
+      type="text"
+      id="color"
+      name="color"
+      placeholder="Color del producto"
+    />
+
+    <label for="storage">Almacenamiento</label>
+    <select name="storage" id="storage">
+      <option value="64">64 GB</option>
+      <option value="128">128 GB</option>
+      <option value="256">256 GB</option>
+      <option value="512">512 GB</option>
+      <option value="1000">1 TB</option>
+    </select>
+
+    <label for="status">Estado</label>
+    <select name="status" id="status">
+      <option value="nuevo">Nuevo</option>
+      <option value="usado">Usado</option>
+    </select>
+
+    <button type="submit">Crear producto</button>
+  </form>
+</DashLayout>
+
+<style>
+  .new-p-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    max-width: 500px;
+  }
+
+  .new-p-form input,
+  .new-p-form select {
+    width: 100%;
+  }
+</style>
+
+<script>
+  import { actions } from "astro:actions";
+
+  const form = document.querySelector("form");
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    const price = formData.get("price") as string;
+    if (price && typeof price === "string") {
+      formData.set("price", price.replace(/\D/g, ""));
+    }
+
+    const { data, error } = await actions.products.create(formData);
+
+    if (error) {
+      console.error(error);
+      alert("Ocurrió un error al crear el producto");
+      return;
+    }
+
+    alert("Producto creado correctamente");
+    window.location.href = "/products";
+  });
+
+  // Input formatting for price field
+  const priceInput = document.querySelector(
+    "#price-input",
+  ) as HTMLInputElement | null;
+
+  if (priceInput) {
+    priceInput.addEventListener("input", function (e: Event) {
+      if (!(e.target instanceof HTMLInputElement)) return;
+
+      // Remove all non-digit characters
+      let value = e.target.value.replace(/\D/g, "");
+
+      if (value) {
+        e.target.value = parseInt(value, 10).toLocaleString("es-CO", {
+          maximumFractionDigits: 0,
+        });
+      } else {
+        e.target.value = "";
+      }
+    });
+  }
+</script>

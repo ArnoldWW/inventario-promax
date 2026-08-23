@@ -1,0 +1,68 @@
+---
+import DashLayout from "../layouts/DashLayout.astro";
+import { turso } from "../turso";
+import formatCurrency from "../utils";
+
+const { rows } = await turso.execute("SELECT * FROM products");
+
+console.log(rows);
+---
+
+<DashLayout>
+  <h2>Productos</h2>
+
+  <a href="/products/new" class="link-btn">Nuevo producto</a>
+
+  <div class="table-wrapper">
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Marca</th>
+          <th>IMEI</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Color</th>
+          <th>Almacenamiento</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rows.map((row) => (
+            <tr>
+              <td>{row.name}</td>
+              <td>{row.brand}</td>
+              <td>{row.imei}</td>
+              <td>{formatCurrency(Number(row.price))}</td>
+              <td>{row.stock}</td>
+              <td>{row.color}</td>
+              <td>{row.storage}</td>
+              <td>{row.status}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</DashLayout>
+
+<style>
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem 0;
+  }
+  .table-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .table-wrapper table thead {
+    background-color: #eee;
+  }
+  .table-wrapper th,
+  .table-wrapper td {
+    padding: 0.5rem;
+    text-align: left;
+  }
+</style>
