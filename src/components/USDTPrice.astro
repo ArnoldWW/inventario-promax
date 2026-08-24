@@ -1,0 +1,27 @@
+<p id="usdt-price">USDT: <span>--</span></p>
+
+<script>
+  import formatCurrency from "../utils/index.ts";
+
+  const span = document.querySelector("#usdt-price span");
+
+  async function loadPrice() {
+    if (!span) return;
+    try {
+      const res = await fetch(
+        "https://api.binance.com/api/v3/ticker/price?symbol=USDTCOP",
+        { signal: AbortSignal.timeout(3000) }
+      );
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const price = Number(data.price);
+      if (!Number.isFinite(price)) throw new Error("Precio inválido");
+      span.textContent = formatCurrency(price);
+    } catch {
+      span.textContent = "--";
+    }
+  }
+
+  loadPrice();
+  setInterval(loadPrice, 60_000);
+</script>

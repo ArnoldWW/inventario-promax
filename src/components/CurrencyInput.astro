@@ -1,0 +1,55 @@
+---
+interface Props {
+  label: string;
+  id: string;
+  name: string;
+  currency: "COP" | "USD";
+  placeholder?: string;
+}
+
+const { label, id, name, currency, placeholder } = Astro.props;
+
+const localeByCurrency: Record<string, string> = {
+  COP: "es-CO",
+  USD: "en-US"
+};
+
+const locale = localeByCurrency[currency] ?? "es-CO";
+---
+
+<label for={id}>{label}</label>
+<input
+  type="text"
+  id={id}
+  name={name}
+  class="currency-input"
+  inputmode="numeric"
+  placeholder={placeholder}
+  data-locale={locale}
+/>
+
+<style>
+  .currency-input {
+    width: 100%;
+  }
+</style>
+
+<script>
+  const formatValue = (value: string, locale: string) => {
+    const digits = value.replace(/\D/g, "");
+    if (!digits) return "";
+    return parseInt(digits, 10).toLocaleString(locale, {
+      maximumFractionDigits: 0
+    });
+  };
+
+  document
+    .querySelectorAll<HTMLInputElement>(".currency-input")
+    .forEach((input) => {
+      const locale = input.dataset.locale ?? "es-CO";
+
+      input.addEventListener("input", () => {
+        input.value = formatValue(input.value, locale);
+      });
+    });
+</script>

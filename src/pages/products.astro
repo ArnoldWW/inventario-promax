@@ -4,6 +4,7 @@ import { turso } from "../turso";
 import formatCurrency from "../utils";
 
 const { rows } = await turso.execute("SELECT * FROM products");
+console.log(rows);
 ---
 
 <DashLayout>
@@ -14,7 +15,12 @@ const { rows } = await turso.execute("SELECT * FROM products");
   {
     rows.length === 0 ? (
       <p>No hay productos registrados.</p>
-    ) : (
+    ) : (      
+      <label for="show-delete" class="input-show-delete">
+        <input type="checkbox" id="show-delete" autocomplete="off" />
+        Modo eliminar
+      </label>
+
       <div class="table-wrapper">
         <table border="1">
           <thead>
@@ -22,11 +28,13 @@ const { rows } = await turso.execute("SELECT * FROM products");
               <th>Nombre</th>
               <th>Marca</th>
               <th>IMEI</th>
-              <th>Precio</th>
+              <th>Precio (COP)</th>
+              <th>Precio (USD)</th>
               <th>Stock</th>
               <th>Color</th>
               <th>Almacenamiento</th>
               <th>Estado</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -36,10 +44,21 @@ const { rows } = await turso.execute("SELECT * FROM products");
                 <td>{row.brand}</td>
                 <td>{row.imei}</td>
                 <td>{formatCurrency(Number(row.price))}</td>
+                <td>{formatCurrency(Number(row.price_usd), "USD")}</td>
                 <td>{row.stock}</td>
                 <td>{row.color}</td>
                 <td>{row.storage}</td>
                 <td>{row.status}</td>
+
+                <td class="table-actions">
+                  <a href={`/products/${row.id}/edit`} class="link-btn">
+                    Editar
+                  </a>
+                  <a href="#" class="link-btn">
+                    Vender
+                  </a>
+                  <button class="link-btn delete-btn">Eliminar</button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -53,11 +72,22 @@ const { rows } = await turso.execute("SELECT * FROM products");
   .table-wrapper {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 1rem 0;
+  }
+  @media (max-width: 768px) {
+    .table-wrapper {
+      padding: 1rem 0;
+    }
+  }
+
+
+  .input-show-delete {
+    display: flex;
+    align-items:;
+    gap: 0.5rem;
+    margin: 1rem 0;
   }
   .table-wrapper table {
     width: 100%;
-    border-collapse: collapse;
   }
   .table-wrapper table thead {
     background-color: #eee;
@@ -67,4 +97,31 @@ const { rows } = await turso.execute("SELECT * FROM products");
     padding: 0.5rem;
     text-align: left;
   }
+  .table-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .table-actions .delete-btn {
+    display: none;
+    background-color: var(--red);
+  }
 </style>
+
+<script>
+  const showDeleteCheckbox = document.getElementById(
+    "show-delete"
+  ) as HTMLInputElement;
+  const deleteButtons = document.querySelectorAll(
+    ".table-actions .delete-btn"
+  ) as NodeListOf<HTMLButtonElement>;
+
+  if (showDeleteCheckbox || deleteButtons) {
+    showDeleteCheckbox.addEventListener("change", () => {
+      const isChecked = showDeleteCheckbox.checked;
+      deleteButtons.forEach((btn) => {
+        btn.style.display = isChecked ? "block" : "none";
+      });
+    });
+  }
+</script>

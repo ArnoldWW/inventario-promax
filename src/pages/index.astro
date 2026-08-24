@@ -22,8 +22,7 @@ import AuthLayout from "../layouts/AuthLayout.astro";
         required
       />
 
-      <!-- SHOW PASSWORD -->
-      <label for="show-password">
+      <label for="show-password" class="input-show-password">
         <input type="checkbox" id="show-password" />
         Mostrar contraseña
       </label>
@@ -41,6 +40,12 @@ import AuthLayout from "../layouts/AuthLayout.astro";
     gap: 1rem;
     max-width: 30rem;
     margin: 0 auto;
+  }
+
+  .input-show-password {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 </style>
 

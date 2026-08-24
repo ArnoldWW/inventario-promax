@@ -1,4 +1,5 @@
 ---
+import CurrencyInput from "../../components/CurrencyInput.astro";
 import DashLayout from "../../layouts/DashLayout.astro";
 ---
 
@@ -30,13 +31,20 @@ import DashLayout from "../../layouts/DashLayout.astro";
       placeholder="IMEI del producto"
     />
 
-    <label for="price-input">Precio</label>
-    <input
-      type="text"
+    <CurrencyInput
+      label="Precio (COP)"
       id="price-input"
       name="price"
-      inputmode="numeric"
+      currency="COP"
       placeholder="$1.000.000"
+    />
+
+    <CurrencyInput
+      label="Precio (USD)"
+      id="price-input-usd"
+      name="price_usd"
+      currency="USD"
+      placeholder="$300"
     />
 
     <label for="stock">Stock</label>
@@ -91,6 +99,7 @@ import DashLayout from "../../layouts/DashLayout.astro";
 
 <script>
   import { isInputError } from "astro/actions/runtime/entrypoints/server.js";
+  import { isActionError } from "astro:actions";
   import { actions } from "astro:actions";
 
   const form = document.querySelector("form");
@@ -118,34 +127,12 @@ import DashLayout from "../../layouts/DashLayout.astro";
       return;
     }
 
-    if (error) {
-      alert("Ocurrió un error al crear el producto");
+    if (error && isActionError(error)) {
+      alert(error.message);
       return;
     }
 
     alert(data?.message);
     window.location.href = "/products";
   });
-
-  // Input formatting for price field
-  const priceInput = document.querySelector(
-    "#price-input"
-  ) as HTMLInputElement | null;
-
-  if (priceInput) {
-    priceInput.addEventListener("input", function (e: Event) {
-      if (!(e.target instanceof HTMLInputElement)) return;
-
-      // Remove all non-digit characters
-      let value = e.target.value.replace(/\D/g, "");
-
-      if (value) {
-        e.target.value = parseInt(value, 10).toLocaleString("es-CO", {
-          maximumFractionDigits: 0
-        });
-      } else {
-        e.target.value = "";
-      }
-    });
-  }
 </script>
