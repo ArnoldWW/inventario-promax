@@ -15,8 +15,10 @@
   "dependencies": {
     "@astrojs/cloudflare": "^14.2.3",
     "@libsql/client": "^0.17.4",
+    "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.2.4",
     "jsonwebtoken": "^9.0.3",
+    "tailwindcss": "^4.3.3",
     "wrangler": "^4.125.0"
   },
   "devDependencies": {

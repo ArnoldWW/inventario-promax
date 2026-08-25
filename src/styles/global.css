@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --default-font-family: "Google Sans", monospace;
+}
+
+@layer base {
+  body {
+    font-optical-sizing: auto;
+    @apply text-sm;
+  }
+  input,
+  select,
+  textarea {
+    @apply border border-gray-300 p-1 w-full;
+  }
+
+  h1 {
+    @apply text-3xl font-bold;
+  }
+
+  h2 {
+    @apply text-xl font-bold;
+  }
+
+  table {
+    @apply border-collapse w-full;
+  }
+  thead {
+    @apply bg-gray-100 border border-gray-300 text-left;
+  }
+  tr,
+  th,
+  td {
+    @apply border border-gray-300 p-2;
+  }
+}
+
+@layer components {
+  .custom-container {
+    @apply mx-auto max-w-5xl w-[90%];
+  }
+
+  .btn {
+    @apply bg-blue-500 text-center text-white p-1 rounded hover:bg-blue-600 cursor-pointer font-bold;
+  }
+
+  .link {
+    @apply hover:underline;
+  }
+}

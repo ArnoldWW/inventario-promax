@@ -8,21 +8,23 @@ console.log(rows);
 ---
 
 <DashLayout>
-  <h2>Productos</h2>
+  <h2 class="my-2">Productos</h2>
 
-  <a href="/products/new" class="link-btn">Nuevo producto</a>
+  <a href="/products/new" class="btn">Nuevo producto</a>
 
   {
     rows.length === 0 ? (
       <p>No hay productos registrados.</p>
     ) : (      
-      <label for="show-delete" class="input-show-delete">
-        <input type="checkbox" id="show-delete" autocomplete="off" />
-        Modo eliminar
-      </label>
+      <div class="flex items-center gap-2 my-5">
+        <input type="checkbox" id="show-delete" autocomplete="off" class="w-auto"/>
+        <label for="show-delete">
+         Modo eliminar
+        </label>
+      </div>
 
-      <div class="table-wrapper">
-        <table border="1">
+      <div class="overflow-x-auto pb-3 md:pb-0">
+        <table>
           <thead>
             <tr>
               <th>Nombre</th>
@@ -50,14 +52,14 @@ console.log(rows);
                 <td>{row.storage}</td>
                 <td>{row.status}</td>
 
-                <td class="table-actions">
-                  <a href={`/products/${row.id}/edit`} class="link-btn">
+                <td class="flex flex-col gap-1 border-none" id="table-actions">
+                  <a href={`/products/${row.id}/edit`} class="btn">
                     Editar
                   </a>
-                  <a href="#" class="link-btn">
+                  <a href="#" class="btn">
                     Vender
                   </a>
-                  <button class="link-btn delete-btn">Eliminar</button>
+                  <button class="hidden btn delete-btn">Eliminar</button>
                 </td>
               </tr>
             ))}
@@ -68,52 +70,13 @@ console.log(rows);
   }
 </DashLayout>
 
-<style>
-  .table-wrapper {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  @media (max-width: 768px) {
-    .table-wrapper {
-      padding: 1rem 0;
-    }
-  }
-
-
-  .input-show-delete {
-    display: flex;
-    align-items:;
-    gap: 0.5rem;
-    margin: 1rem 0;
-  }
-  .table-wrapper table {
-    width: 100%;
-  }
-  .table-wrapper table thead {
-    background-color: #eee;
-  }
-  .table-wrapper th,
-  .table-wrapper td {
-    padding: 0.5rem;
-    text-align: left;
-  }
-  .table-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .table-actions .delete-btn {
-    display: none;
-    background-color: var(--red);
-  }
-</style>
 
 <script>
   const showDeleteCheckbox = document.getElementById(
     "show-delete"
   ) as HTMLInputElement;
   const deleteButtons = document.querySelectorAll(
-    ".table-actions .delete-btn"
+    "#table-actions .delete-btn"
   ) as NodeListOf<HTMLButtonElement>;
 
   if (showDeleteCheckbox || deleteButtons) {

@@ -4,9 +4,9 @@ import DashLayout from "../../layouts/DashLayout.astro";
 ---
 
 <DashLayout>
-  <h2>Nuevo producto</h2>
+  <h2 class="my-2">Nuevo producto</h2>
 
-  <form action="post" class="new-p-form">
+  <form action="post" id="new-p-form" class="flex flex-col gap-2 my-2 max-w-96">
     <label for="name">Nombre</label>
     <input
       type="text"
@@ -78,31 +78,14 @@ import DashLayout from "../../layouts/DashLayout.astro";
       <option value="usado">Usado</option>
     </select>
 
-    <button type="submit">Crear producto</button>
+    <button type="submit" class="btn my-2">Crear producto</button>
   </form>
 </DashLayout>
 
-<style>
-  .new-p-form {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-    max-width: 500px;
-  }
-
-  .new-p-form input,
-  .new-p-form select {
-    width: 100%;
-  }
-</style>
-
 <script>
-  import { isInputError } from "astro/actions/runtime/entrypoints/server.js";
-  import { isActionError } from "astro:actions";
-  import { actions } from "astro:actions";
+  import { actions, isInputError, isActionError } from "astro:actions";
 
-  const form = document.querySelector("form");
+  const form = document.querySelector("#new-p-form") as HTMLFormElement;
 
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();

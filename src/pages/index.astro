@@ -3,8 +3,13 @@ import AuthLayout from "../layouts/AuthLayout.astro";
 ---
 
 <AuthLayout>
-  <div class="login-container">
-    <form id="login-form" method="post" novalidate>
+  <div class="m-auto p-2 max-w-3xs">
+    <form
+      id="login-form"
+      method="post"
+      novalidate
+      class="flex flex-col gap-2 w-full"
+    >
       <label for="username">Usuario:</label>
       <input
         type="text"
@@ -22,73 +27,58 @@ import AuthLayout from "../layouts/AuthLayout.astro";
         required
       />
 
-      <label for="show-password" class="input-show-password">
-        <input type="checkbox" id="show-password" />
-        Mostrar contraseña
-      </label>
+      <div class="flex items-center justify-start gap-1">
+        <input type="checkbox" id="show-password" class="w-auto" />
+        <label for="show-password" class="text-sm">Mostrar contraseña</label>
+      </div>
 
-      <button type="submit">Iniciar sesion</button>
+      <button type="submit" class="btn">Iniciar sesion</button>
     </form>
   </div>
+
+  <script>
+    import { actions } from "astro:actions";
+
+    const form = document.querySelector("form");
+
+    form?.addEventListener("submit", async (e) => {
+      console.log("Form submitted");
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      const { data, error } = await actions.auth.login(formData);
+
+      if (error?.code === "BAD_REQUEST") {
+        alert("Todos los campos son obligatorios");
+        return;
+      }
+
+      if (error?.code === "UNAUTHORIZED") {
+        alert("Usuario o contraseña incorrectos");
+        return;
+      }
+
+      if (error) {
+        alert("Ocurrió un error al iniciar sesión");
+        return;
+      }
+
+      window.location.href = "/products";
+    });
+
+    const passwordInput = document.getElementById(
+      "password"
+    ) as HTMLInputElement;
+    const showPasswordCheckbox = document.getElementById(
+      "show-password"
+    ) as HTMLInputElement;
+
+    showPasswordCheckbox?.addEventListener("change", (e) => {
+      if (!passwordInput) return;
+
+      showPasswordCheckbox.checked
+        ? (passwordInput.type = "text")
+        : (passwordInput.type = "password");
+    });
+  </script>
 </AuthLayout>
-
-<style>
-  #login-form {
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    max-width: 30rem;
-    margin: 0 auto;
-  }
-
-  .input-show-password {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-</style>
-
-<script>
-  import { actions } from "astro:actions";
-
-  const form = document.querySelector("form");
-
-  form?.addEventListener("submit", async (e) => {
-    console.log("Form submitted");
-    e.preventDefault();
-    const formData = new FormData(form);
-
-    const { data, error } = await actions.auth.login(formData);
-
-    if (error?.code === "BAD_REQUEST") {
-      alert("Todos los campos son obligatorios");
-      return;
-    }
-
-    if (error?.code === "UNAUTHORIZED") {
-      alert("Usuario o contraseña incorrectos");
-      return;
-    }
-
-    if (error) {
-      alert("Ocurrió un error al iniciar sesión");
-      return;
-    }
-
-    window.location.href = "/products";
-  });
-
-  const passwordInput = document.getElementById("password") as HTMLInputElement;
-  const showPasswordCheckbox = document.getElementById(
-    "show-password"
-  ) as HTMLInputElement;
-
-  showPasswordCheckbox?.addEventListener("change", (e) => {
-    if (!passwordInput) return;
-
-    showPasswordCheckbox.checked
-      ? (passwordInput.type = "text")
-      : (passwordInput.type = "password");
-  });
-</script>
