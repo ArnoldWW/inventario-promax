@@ -28,12 +28,6 @@ const locale = localeByCurrency[currency] ?? "es-CO";
   data-locale={locale}
 />
 
-<style>
-  .currency-input {
-    width: 100%;
-  }
-</style>
-
 <script>
   const formatValue = (value: string, locale: string) => {
     const digits = value.replace(/\D/g, "");
