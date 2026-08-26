@@ -9,19 +9,20 @@ const { rows } = await turso.execute("SELECT * FROM products ");
 ---
 
 <DashLayout>
-
+  <a href="/products/new" class="btn my-5">Nuevo producto</a>
   {
     rows.length === 0 ? (
       <p class="py-2">No hay productos registrados.</p>
     ) : (
-      <a href="/products/new" class="btn my-5">Nuevo producto</a>
-      
       <div class="overflow-x-auto pb-3 md:pb-0">
         <div class="flex items-center gap-2 mb-2">
-          <input type="checkbox" id="show-delete" autocomplete="off" class="w-auto"/>
-          <label for="show-delete">
-           Modo eliminar
-          </label>
+          <input
+            type="checkbox"
+            id="show-delete"
+            autocomplete="off"
+            class="w-auto"
+          />
+          <label for="show-delete">Modo eliminar</label>
         </div>
 
         <table>
@@ -44,7 +45,17 @@ const { rows } = await turso.execute("SELECT * FROM products ");
                 <td>{formatCurrency(Number(row.price))}</td>
                 <td>{formatCurrency(Number(row.price_usd), "USD")}</td>
                 <td>{row.status}</td>
-                <td>{row.status === "nuevo" ? formatCurrency(Number(row.price) * Number(row.price_usd) + 100000, "COP") : formatCurrency(Number(row.price) * Number(row.price_usd) + 80000, "COP")}</td>
+                <td>
+                  {row.status === "nuevo"
+                    ? formatCurrency(
+                        Number(row.price) * Number(row.price_usd) + 100000,
+                        "COP"
+                      )
+                    : formatCurrency(
+                        Number(row.price) * Number(row.price_usd) + 80000,
+                        "COP"
+                      )}
+                </td>
 
                 <td class="flex flex-col gap-1 border-none" id="table-actions">
                   <a href={`/products/${row.id}/details`} class="btn">
@@ -66,7 +77,6 @@ const { rows } = await turso.execute("SELECT * FROM products ");
     )
   }
 </DashLayout>
-
 
 <script>
   const showDeleteCheckbox = document.getElementById(
