@@ -3,25 +3,27 @@ import DashLayout from "../layouts/DashLayout.astro";
 import { turso } from "../turso";
 import formatCurrency from "../utils";
 
-const { rows } = await turso.execute("SELECT * FROM products");
+const { rows } = await turso.execute("SELECT * FROM products ");
+
+//const rows = []
 ---
 
 <DashLayout>
-  <h2 class="my-2">Productos</h2>
-
-  <a href="/products/new" class="btn">Nuevo producto</a>
 
   {
     rows.length === 0 ? (
-      <p>No hay productos registrados.</p>
-    ) : (      
-      <div class="flex items-center gap-2 my-5">
-        <input type="checkbox" id="show-delete" autocomplete="off" class="w-auto"/>
-        <label for="show-delete">
-         Modo eliminar
-        </label>
-      </div>
+      <p class="py-2">No hay productos registrados.</p>
+    ) : (
+      <a href="/products/new" class="btn my-5">Nuevo producto</a>
+      
       <div class="overflow-x-auto pb-3 md:pb-0">
+        <div class="flex items-center gap-2 mb-2">
+          <input type="checkbox" id="show-delete" autocomplete="off" class="w-auto"/>
+          <label for="show-delete">
+           Modo eliminar
+          </label>
+        </div>
+
         <table>
           <thead>
             <tr>
