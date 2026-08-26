@@ -18,10 +18,11 @@ export const products = {
     handler: async (input, context) => {
       const { name, brand, imei, price, color, storage, status, price_usd } =
         input;
+      const id = crypto.randomUUID();
 
       const { rows } = await turso.execute(
-        "INSERT INTO products (name, brand, imei, price, stock, color, storage, status, price_usd) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [name, brand, imei, price, color, storage, status, price_usd]
+        "INSERT INTO products (id, name, brand, imei, price, color, storage, status, price_usd) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [id, name, brand, imei, price, color, storage, status, price_usd]
       );
 
       console.log(rows);
