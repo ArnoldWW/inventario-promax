@@ -1,0 +1,28 @@
+---
+// src/components/Navbar.astro
+const { pathname } = Astro.url;
+
+const LINKS = [
+  { href: "/products", label: "Productos" },
+  { href: "/sales", label: "Ventas" }
+];
+---
+
+<nav class="flex items-center gap-2">
+  {
+    LINKS.map(({ href, label }) => {
+      const isActive =
+        href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+      return (
+        <a
+          href={href}
+          aria-current={isActive ? "page" : undefined}
+          class:list={["block p-2", isActive ? "bg-white" : null]}
+        >
+          {label}
+        </a>
+      );
+    })
+  }
+</nav>

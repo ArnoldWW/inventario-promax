@@ -1,6 +1,8 @@
 ---
 import MainLayout from "./MainLayout.astro";
 import USDTPrice from "../components/USDTPrice.astro";
+
+import NavBar from "@/components/NavBar.astro";
 ---
 
 <MainLayout>
@@ -14,10 +16,7 @@ import USDTPrice from "../components/USDTPrice.astro";
       </div>
       <USDTPrice />
 
-      <nav class="flex items-center gap-2 pb-2">
-        <a href="/products" class="link">Productos</a>
-        <a href="/sales" class="link">Ventas</a>
-      </nav>
+      <NavBar />
     </div>
   </header>
   <main class="custom-container">
