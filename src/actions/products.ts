@@ -10,28 +10,18 @@ export const products = {
       brand: z.string().trim().min(1, "La marca es requerida"),
       imei: z.coerce.number().min(1, "El IMEI es requerido"),
       price: z.coerce.number().min(1, "El precio es requerido"),
-      stock: z.coerce.number().min(1, "El stock es requerido"),
       color: z.string().trim().min(1, "El color es requerido"),
       storage: z.string().trim().min(1, "El almacenamiento es requerido"),
       status: z.string().trim().min(1, "El estado es requerido"),
       price_usd: z.coerce.number().min(1, "El precio en USD es requerido")
     }),
     handler: async (input, context) => {
-      const {
-        name,
-        brand,
-        imei,
-        price,
-        stock,
-        color,
-        storage,
-        status,
-        price_usd
-      } = input;
+      const { name, brand, imei, price, color, storage, status, price_usd } =
+        input;
 
       const { rows } = await turso.execute(
         "INSERT INTO products (name, brand, imei, price, stock, color, storage, status, price_usd) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [name, brand, imei, price, stock, color, storage, status, price_usd]
+        [name, brand, imei, price, color, storage, status, price_usd]
       );
 
       console.log(rows);
