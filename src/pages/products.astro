@@ -4,7 +4,6 @@ import { turso } from "../turso";
 import formatCurrency from "../utils";
 
 const { rows } = await turso.execute("SELECT * FROM products");
-console.log(rows);
 ---
 
 <DashLayout>
@@ -22,20 +21,16 @@ console.log(rows);
          Modo eliminar
         </label>
       </div>
-
       <div class="overflow-x-auto pb-3 md:pb-0">
         <table>
           <thead>
             <tr>
               <th>Nombre</th>
-              <th>Marca</th>
               <th>IMEI</th>
               <th>Precio (COP)</th>
               <th>Precio (USD)</th>
-              <th>Stock</th>
-              <th>Color</th>
-              <th>Almacenamiento</th>
               <th>Estado</th>
+              <th>Valor total</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -43,16 +38,16 @@ console.log(rows);
             {rows.map((row) => (
               <tr>
                 <td>{row.name}</td>
-                <td>{row.brand}</td>
                 <td>{row.imei}</td>
                 <td>{formatCurrency(Number(row.price))}</td>
                 <td>{formatCurrency(Number(row.price_usd), "USD")}</td>
-                <td>{row.stock}</td>
-                <td>{row.color}</td>
-                <td>{row.storage}</td>
                 <td>{row.status}</td>
+                <td>{row.status === "nuevo" ? formatCurrency(Number(row.price) * Number(row.price_usd) + 100000, "COP") : formatCurrency(Number(row.price) * Number(row.price_usd) + 80000, "COP")}</td>
 
                 <td class="flex flex-col gap-1 border-none" id="table-actions">
+                  <a href={`/products/${row.id}/details`} class="btn">
+                    Detalles
+                  </a>
                   <a href={`/products/${row.id}/edit`} class="btn">
                     Editar
                   </a>
