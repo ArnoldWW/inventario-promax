@@ -104,7 +104,7 @@ const { rows } = await turso.execute("SELECT * FROM products LIMIT 10");
         const formData = new FormData();
         formData.set("id", id);
 
-        const { data, error } = await actions.products.DELETE(formData);
+        const { data, error } = await actions.products.delete(formData);
 
         if (error && isActionError(error)) {
           alert(error.message);

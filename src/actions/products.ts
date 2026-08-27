@@ -60,7 +60,7 @@ export const products = {
       return { success: true, message: "Producto actualizado exitosamente" };
     }
   }),
-  DELETE: defineAction({
+  delete: defineAction({
     accept: "form",
     input: z.object({
       id: z.string().trim().min(1, "El ID es requerido")
