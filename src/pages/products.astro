@@ -30,8 +30,8 @@ const { rows } = await turso.execute("SELECT * FROM products ");
             <tr>
               <th>Nombre</th>
               <th>IMEI</th>
-              <th>Precio (COP)</th>
-              <th>Precio (USD)</th>
+              <th>Precio dolar (COP)</th>
+              <th>Precio producto (USD)</th>
               <th>Estado</th>
               <th>Valor total</th>
               <th>Acciones</th>
@@ -48,12 +48,10 @@ const { rows } = await turso.execute("SELECT * FROM products ");
                 <td>
                   {row.status === "nuevo"
                     ? formatCurrency(
-                        Number(row.price) * Number(row.price_usd) + 100000,
-                        "COP"
+                        Number(row.price) * Number(row.price_usd) + 100000
                       )
                     : formatCurrency(
-                        Number(row.price) * Number(row.price_usd) + 80000,
-                        "COP"
+                        Number(row.price) * Number(row.price_usd) + 80000
                       )}
                 </td>
 

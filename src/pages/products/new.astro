@@ -32,19 +32,19 @@ import DashLayout from "../../layouts/DashLayout.astro";
     />
 
     <CurrencyInput
-      label="Precio (COP)"
+      label="Precio dolar (COP)"
       id="price-input"
       name="price"
       currency="COP"
-      placeholder="$1.000.000"
+      placeholder="$3.500"
     />
 
     <CurrencyInput
-      label="Precio (USD)"
+      label="Precio producto (USD)"
       id="price-input-usd"
       name="price_usd"
       currency="USD"
-      placeholder="$300"
+      placeholder="$1,000"
     />
 
     <label for="color">Color</label>
@@ -84,8 +84,15 @@ import DashLayout from "../../layouts/DashLayout.astro";
     const formData = new FormData(form);
 
     const price = formData.get("price") as string;
-    if (price && typeof price === "string") {
+
+    const price_usd = formData.get("price_usd") as string;
+
+    if (price.trim() && typeof price === "string") {
       formData.set("price", price.replace(/\D/g, ""));
+    }
+
+    if (price_usd.trim() && typeof price_usd === "string") {
+      formData.set("price_usd", price_usd.replace(/\D/g, ""));
     }
 
     const { data, error } = await actions.products.create(formData);
