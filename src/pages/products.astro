@@ -3,7 +3,7 @@ import DashLayout from "../layouts/DashLayout.astro";
 import { turso } from "../turso";
 import formatCurrency from "../utils";
 
-const { rows } = await turso.execute("SELECT * FROM products ");
+const { rows } = await turso.execute("SELECT * FROM products LIMIT 10");
 
 //const rows = []
 ---
