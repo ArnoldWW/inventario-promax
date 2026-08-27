@@ -9,9 +9,10 @@ export const products = {
       name: z.string().trim().min(1, "El nombre es requerido"),
       brand: z.string().trim().min(1, "La marca es requerida"),
       imei: z.coerce
-        .number()
-        .min(15, "El IMEI debe tener 15 dígitos")
-        .max(15, "El IMEI debe tener menos de 15 dígitos"),
+        .string()
+        .trim()
+        .length(15, "El IMEI debe tener 15 dígitos")
+        .regex(/^\d+$/, "El IMEI debe contener solo números"),
       price: z.coerce.number().min(1, "El precio es requerido"),
       color: z.string().trim().min(1, "El color es requerido"),
       storage: z.string().trim().min(1, "El almacenamiento es requerido"),

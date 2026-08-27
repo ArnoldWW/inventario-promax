@@ -24,10 +24,12 @@ import DashLayout from "../../layouts/DashLayout.astro";
 
     <label for="imei">IMEI</label>
     <input
-      type="number"
+      type="text"
+      inputmode="numeric"
       id="imei"
       name="imei"
       pattern="[0-9]*"
+      maxlength="15"
       placeholder="IMEI del producto"
     />
 
