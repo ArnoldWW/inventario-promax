@@ -1,1 +1,122 @@
-<h1>Editar producto</h1>
+---
+import CurrencyInput from "@/components/CurrencyInput.astro";
+import DashLayout from "@/layouts/DashLayout.astro";
+import { turso } from "@/turso";
+
+const params = Astro.params;
+
+if (!params.id) {
+  return Astro.redirect("/products");
+}
+
+const { rows } = await turso.execute("SELECT * FROM products WHERE id = ?", [
+  params.id
+]);
+
+const product = rows[0];
+---
+
+<DashLayout>
+  <a href="/products" class="btn my-5">&larr;</a>
+
+  <h2 class="my-2">Editar producto</h2>
+
+  <form
+    action="post"
+    id="update-p-form"
+    class="flex flex-col gap-2 my-2 max-w-96"
+  >
+    <input type="hidden" name="id" value={String(product?.id ?? "")} />
+
+    <label for="name">Nombre</label>
+    <input
+      type="text"
+      id="name"
+      name="name"
+      placeholder="Nombre del producto"
+      value={String(product?.name ?? "")}
+    />
+
+    <label for="brand">Marca</label>
+    <select name="brand" id="brand">
+      <option value="apple" selected={product?.brand === "apple"}>Apple</option>
+      <option value="samsung" selected={product?.brand === "samsung"}
+        >Samsung</option
+      >
+      <option value="otro" selected={product?.brand === "otro"}>Otro</option>
+    </select>
+
+    <label for="imei">IMEI</label>
+    <input
+      type="text"
+      inputmode="numeric"
+      id="imei"
+      name="imei"
+      pattern="[0-9]*"
+      maxlength="15"
+      placeholder="IMEI del producto"
+      value={String(product?.imei ?? "")}
+    />
+
+    <label for="color">Color</label>
+    <input
+      type="text"
+      id="color"
+      name="color"
+      placeholder="Color del producto"
+      value={String(product?.color ?? "")}
+    />
+
+    <label for="storage">Almacenamiento</label>
+    <select name="storage" id="storage">
+      <option value="64" selected={product?.storage === "64"}>64 GB</option>
+      <option value="128" selected={product?.storage === "128"}>128 GB</option>
+      <option value="256" selected={product?.storage === "256"}>256 GB</option>
+      <option value="512" selected={product?.storage === "512"}>512 GB</option>
+      <option value="1000" selected={product?.storage === "1000"}>1 TB</option>
+    </select>
+
+    <label for="status">Estado</label>
+    <select name="status" id="status">
+      <option value="nuevo" selected={product?.status === "nuevo"}>Nuevo</option
+      >
+      <option value="usado" selected={product?.status === "usado"}>Usado</option
+      >
+    </select>
+
+    <button type="submit" class="btn my-2">Modificar producto</button>
+  </form>
+</DashLayout>
+
+<script>
+  import { actions, isInputError, isActionError } from "astro:actions";
+
+  const form = document.querySelector("#update-p-form") as HTMLFormElement;
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    const { data, error } = await actions.products.update(formData);
+
+    if (error && isInputError(error)) {
+      const plainArray = Object.entries(error.fields).map(
+        ([field, message]) => {
+          return `${field}: ${message}`;
+        }
+      );
+
+      alert("Campos con error:\n" + plainArray.join("\n"));
+
+      return;
+    }
+
+    if (error && isActionError(error)) {
+      alert(error.message);
+      return;
+    }
+
+    alert(data?.message);
+    window.location.href = "/products";
+  });
+</script>

@@ -10,22 +10,17 @@ const { rows } = await turso.execute("SELECT * FROM products LIMIT 10");
 
 <DashLayout>
   <a href="/products/new" class="btn my-5">Nuevo producto</a>
+  <div class="flex items-center gap-2 mb-2">
+    <input type="checkbox" id="show-delete" autocomplete="off" class="w-auto" />
+    <label for="show-delete">Modo eliminar</label>
+  </div>
+
   {
     rows.length === 0 ? (
       <p class="py-2">No hay productos registrados.</p>
     ) : (
       <div class="overflow-x-auto pb-3 md:pb-0">
-        <div class="flex items-center gap-2 mb-2">
-          <input
-            type="checkbox"
-            id="show-delete"
-            autocomplete="off"
-            class="w-auto"
-          />
-          <label for="show-delete">Modo eliminar</label>
-        </div>
-
-        <table>
+        <table class="mb-10">
           <thead>
             <tr>
               <th>Nombre</th>
@@ -65,7 +60,12 @@ const { rows } = await turso.execute("SELECT * FROM products LIMIT 10");
                   <a href="#" class="btn">
                     Vender
                   </a>
-                  <button class="hidden btn delete-btn">Eliminar</button>
+                  <button
+                    class="hidden btn delete-btn bg-red-400"
+                    data-id={String(row.id)}
+                  >
+                    Eliminar
+                  </button>
                 </td>
               </tr>
             ))}
@@ -77,6 +77,8 @@ const { rows } = await turso.execute("SELECT * FROM products LIMIT 10");
 </DashLayout>
 
 <script>
+  import { actions, isActionError } from "astro:actions";
+
   const showDeleteCheckbox = document.getElementById(
     "show-delete"
   ) as HTMLInputElement;
@@ -89,6 +91,28 @@ const { rows } = await turso.execute("SELECT * FROM products LIMIT 10");
       const isChecked = showDeleteCheckbox.checked;
       deleteButtons.forEach((btn) => {
         btn.style.display = isChecked ? "block" : "none";
+      });
+    });
+
+    deleteButtons.forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const id = btn.dataset.id;
+        if (!id) return;
+
+        if (!confirm("¿Estás seguro de eliminar este producto?")) return;
+
+        const formData = new FormData();
+        formData.set("id", id);
+
+        const { data, error } = await actions.products.DELETE(formData);
+
+        if (error && isActionError(error)) {
+          alert(error.message);
+          return;
+        }
+
+        alert(data?.message);
+        window.location.reload();
       });
     });
   }

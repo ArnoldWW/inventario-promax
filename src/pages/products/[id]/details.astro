@@ -16,13 +16,15 @@ const product = rows[0];
 ---
 
 <DashLayout>
+  <a href="/products" class="btn my-5">&larr;</a>
+
   <h2 class="my-2">Detalles del producto</h2>
 
   {
     !product ? (
       <p>No se encontró el producto con ID {params.id}</p>
     ) : (
-      <div class="flex flex-col gap-2 my-2">
+      <div class="flex flex-col gap-2 my-2 max-w-96">
         <p>
           <strong>Nombre:</strong> {product.name}
         </p>
@@ -47,6 +49,10 @@ const product = rows[0];
         <p>
           <strong>Estado:</strong> {product.status}
         </p>
+
+        <a href={`/products/${product.id}/edit`} class="btn">
+          Editar producto
+        </a>
       </div>
     )
   }

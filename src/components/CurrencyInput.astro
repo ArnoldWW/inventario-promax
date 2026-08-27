@@ -5,9 +5,10 @@ interface Props {
   name: string;
   currency: "COP" | "USD";
   placeholder?: string;
+  value?: string;
 }
 
-const { label, id, name, currency, placeholder } = Astro.props;
+const { label, id, name, currency, placeholder, value } = Astro.props;
 
 const localeByCurrency: Record<string, string> = {
   COP: "es-CO",
@@ -25,6 +26,7 @@ const locale = localeByCurrency[currency] ?? "es-CO";
   class="currency-input"
   inputmode="numeric"
   placeholder={placeholder}
+  value={value}
   data-locale={locale}
 />
 
