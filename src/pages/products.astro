@@ -3,17 +3,30 @@ import DashLayout from "../layouts/DashLayout.astro";
 import { turso } from "../turso";
 import formatCurrency from "../utils";
 
-const { rows } = await turso.execute(
-  "SELECT * FROM products ORDER BY created_at DESC LIMIT 10"
-);
+const PAGE_SIZE = 5;
+const { searchParams } = Astro.url;
+const page = Math.max(1, parseInt(searchParams.get("page") ?? "1") || 1);
+const offset = (page - 1) * PAGE_SIZE;
 
-//const rows = []
+const [
+  {
+    rows: [{ count }],
+  },
+  { rows },
+] = await turso.batch([
+  { sql: "SELECT COUNT(*) AS count FROM products", args: [] },
+  {
+    sql: "SELECT * FROM products ORDER BY created_at DESC LIMIT ? OFFSET ?",
+    args: [PAGE_SIZE, offset]
+  }
+]);
+const totalPages = Math.max(1, Math.ceil(Number(count) / PAGE_SIZE));
 ---
 
 <DashLayout>
   <a href="/products/new" class="btn my-5">Nuevo producto</a>
   {
-    rows.length > 0 && (
+    totalPages > 0 && (
       <div class="flex items-center gap-2 mb-2">
         <input
           type="checkbox"
@@ -27,7 +40,7 @@ const { rows } = await turso.execute(
   }
 
   {
-    rows.length === 0 ? (
+    totalPages === 0 ? (
       <p class="mt-1">No hay productos registrados.</p>
     ) : (
       <div class="overflow-x-auto pb-3 md:pb-0">
@@ -88,6 +101,19 @@ const { rows } = await turso.execute(
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div class="flex justify-center gap-2">
+        {page > 1 && (
+          <a href={`/products?page=${page - 1}`} class="btn">
+            Anterior
+          </a>
+        )}
+        {page < totalPages && (
+          <a href={`/products?page=${page + 1}`} class="btn">
+            Siguiente
+          </a>
+        )}
       </div>
     )
   }
