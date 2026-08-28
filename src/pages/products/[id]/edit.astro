@@ -1,5 +1,4 @@
 ---
-import CurrencyInput from "@/components/CurrencyInput.astro";
 import DashLayout from "@/layouts/DashLayout.astro";
 import { turso } from "@/turso";
 
@@ -35,6 +34,7 @@ const product = rows[0];
       name="name"
       placeholder="Nombre del producto"
       value={String(product?.name ?? "")}
+      required
     />
 
     <label for="brand">Marca</label>
@@ -56,6 +56,7 @@ const product = rows[0];
       maxlength="15"
       placeholder="IMEI del producto"
       value={String(product?.imei ?? "")}
+      required
     />
 
     <label for="color">Color</label>
@@ -65,6 +66,7 @@ const product = rows[0];
       name="color"
       placeholder="Color del producto"
       value={String(product?.color ?? "")}
+      required
     />
 
     <label for="storage">Almacenamiento</label>
@@ -75,6 +77,29 @@ const product = rows[0];
       <option value="512" selected={product?.storage === "512"}>512 GB</option>
       <option value="1000" selected={product?.storage === "1000"}>1 TB</option>
     </select>
+
+    <label for="provider">Proveedor</label>
+    <select name="provider" id="provider">
+      <option value="proveedor1" selected={product?.provider === "proveedor1"}
+        >Proveedor 1</option
+      >
+      <option value="proveedor2" selected={product?.provider === "proveedor2"}
+        >Proveedor 2</option
+      >
+    </select>
+
+    <label for="battery">Porcentaje de Bateria (%)</label>
+    <input
+      type="number"
+      id="battery"
+      name="battery"
+      min="0"
+      max="100"
+      step="1"
+      placeholder="98%"
+      value={String(product?.battery ?? "")}
+      required
+    />
 
     <label for="status">Estado</label>
     <select name="status" id="status">
@@ -96,7 +121,6 @@ const product = rows[0];
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = new FormData(form);
-
     const { data, error } = await actions.products.update(formData);
 
     if (error && isInputError(error)) {

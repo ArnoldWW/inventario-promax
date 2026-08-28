@@ -43,20 +43,29 @@ const localeDate = new Date(String(product.created_at)).toLocaleString(
         <p>
           <strong>IMEI:</strong> {product.imei}
         </p>
+
+        <p>
+          <strong>Color:</strong> {product.color}
+        </p>
+        <p>
+          <strong>Almacenamiento:</strong> {product.storage} GB
+        </p>
+
+        <p>
+          <strong>Proveedor:</strong> {product.provider}
+        </p>
+        <p>
+          <strong>Batería:</strong> {product.battery}%
+        </p>
+
+        <p>
+          <strong>Estado:</strong> {product.status}
+        </p>
         <p>
           <strong>Precio dolar (COP):</strong> {product.dollar_cop}
         </p>
         <p>
           <strong>Precio producto (USD):</strong> {product.price_usd}
-        </p>
-        <p>
-          <strong>Color:</strong> {product.color}
-        </p>
-        <p>
-          <strong>Almacenamiento:</strong> {product.storage}
-        </p>
-        <p>
-          <strong>Estado:</strong> {product.status}
         </p>
 
         <p>
