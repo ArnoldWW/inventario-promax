@@ -35,8 +35,8 @@ import DashLayout from "../../layouts/DashLayout.astro";
 
     <CurrencyInput
       label="Precio dolar (COP)"
-      id="price-input"
-      name="price"
+      id="dollar-cop-input"
+      name="dollar_cop"
       currency="COP"
       placeholder="$3.500"
     />
@@ -85,12 +85,12 @@ import DashLayout from "../../layouts/DashLayout.astro";
     e.preventDefault();
     const formData = new FormData(form);
 
-    const price = formData.get("price") as string;
+    const dollar_cop = formData.get("dollar_cop") as string;
 
     const price_usd = formData.get("price_usd") as string;
 
-    if (price.trim() && typeof price === "string") {
-      formData.set("price", price.replace(/\D/g, ""));
+    if (dollar_cop.trim() && typeof dollar_cop === "string") {
+      formData.set("dollar_cop", dollar_cop.replace(/\D/g, ""));
     }
 
     if (price_usd.trim() && typeof price_usd === "string") {

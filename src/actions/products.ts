@@ -13,20 +13,28 @@ export const products = {
         .trim()
         .length(15, "El IMEI debe tener 15 dígitos")
         .regex(/^\d+$/, "El IMEI debe contener solo números"),
-      price: z.coerce.number().min(1, "El precio es requerido"),
+      dollar_cop: z.coerce.number().min(1, "El precio es requerido"),
       color: z.string().trim().min(1, "El color es requerido"),
       storage: z.string().trim().min(1, "El almacenamiento es requerido"),
       status: z.string().trim().min(1, "El estado es requerido"),
       price_usd: z.coerce.number().min(1, "El precio en USD es requerido")
     }),
     handler: async (input, context) => {
-      const { name, brand, imei, price, color, storage, status, price_usd } =
-        input;
+      const {
+        name,
+        brand,
+        imei,
+        dollar_cop,
+        color,
+        storage,
+        status,
+        price_usd
+      } = input;
       const id = crypto.randomUUID();
 
       const { rows } = await turso.execute(
-        "INSERT INTO products (id, name, brand, imei, price, color, storage, status, price_usd) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [id, name, brand, imei, price, color, storage, status, price_usd]
+        "INSERT INTO products (id, name, brand, imei, dollar_cop, color, storage, status, price_usd) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [id, name, brand, imei, dollar_cop, color, storage, status, price_usd]
       );
 
       console.log(rows);
