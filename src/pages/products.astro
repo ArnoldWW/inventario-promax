@@ -3,21 +3,32 @@ import DashLayout from "../layouts/DashLayout.astro";
 import { turso } from "../turso";
 import formatCurrency from "../utils";
 
-const { rows } = await turso.execute("SELECT * FROM products LIMIT 10");
+const { rows } = await turso.execute(
+  "SELECT * FROM products ORDER BY created_at DESC LIMIT 10"
+);
 
 //const rows = []
 ---
 
 <DashLayout>
   <a href="/products/new" class="btn my-5">Nuevo producto</a>
-  <div class="flex items-center gap-2 mb-2">
-    <input type="checkbox" id="show-delete" autocomplete="off" class="w-auto" />
-    <label for="show-delete">Modo eliminar</label>
-  </div>
+  {
+    rows.length > 0 && (
+      <div class="flex items-center gap-2 mb-2">
+        <input
+          type="checkbox"
+          id="show-delete"
+          autocomplete="off"
+          class="w-auto"
+        />
+        <label for="show-delete">Modo eliminar</label>
+      </div>
+    )
+  }
 
   {
     rows.length === 0 ? (
-      <p class="py-2">No hay productos registrados.</p>
+      <p class="mt-1">No hay productos registrados.</p>
     ) : (
       <div class="overflow-x-auto pb-3 md:pb-0">
         <table class="mb-10">
@@ -36,7 +47,13 @@ const { rows } = await turso.execute("SELECT * FROM products LIMIT 10");
             {rows.map((row) => (
               <tr>
                 <td>{row.name}</td>
-                <td>{row.imei}</td>
+                <td>
+                  {row.imei
+                    ? String(row.imei)
+                        .slice(-4)
+                        .padStart(String(row.imei).length, "*")
+                    : "--"}
+                </td>
                 <td>{formatCurrency(Number(row.price))}</td>
                 <td>{formatCurrency(Number(row.price_usd), "USD")}</td>
                 <td>{row.status}</td>
