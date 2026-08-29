@@ -1,0 +1,188 @@
+---
+import type { Product } from "@/types";
+import CurrencyInput from "@/components/CurrencyInput.astro";
+
+interface Props {
+  product?: Product
+}
+
+const { product } = Astro.props as Props;
+---
+
+<form action="post" id="product-form" class="flex flex-col gap-2 my-2 max-w-96">
+  {product?.id &&
+    <input id="id-input" type="hidden" name="id" value={product?.id ?? ""} />
+  }
+
+  <label for="name">Nombre</label>
+  <input
+    type="text"
+    id="name"
+    name="name"
+    placeholder="Nombre del producto"
+    value={product?.name ?? ""}
+    required
+  />
+
+  <label for="brand">Marca</label>
+  <select name="brand" id="brand">
+    <option value="apple" selected={product?.brand === "apple"}>Apple</option>
+    <option value="samsung" selected={product?.brand === "samsung"}>Samsung</option>
+    <option value="otro" selected={product?.brand === "otro"}>Otro</option>
+  </select>
+
+  <label for="imei">IMEI</label>
+  <input
+    type="text"
+    inputmode="numeric"
+    id="imei"
+    name="imei"
+    pattern="[0-9]*"
+    maxlength="15"
+    placeholder="IMEI del producto"
+    value={product?.imei ?? ""}
+    required
+  />
+
+  <label for="color">Color</label>
+  <input
+    type="text"
+    id="color"
+    name="color"
+    placeholder="Color del producto"
+    value={product?.color ?? ""}
+    required
+  />
+
+  <label for="storage">Almacenamiento</label>
+  <select name="storage" id="storage">
+    <option value="64" selected={product?.storage === "64"}>64 GB</option>
+    <option value="128" selected={product?.storage === "128"}>128 GB</option>
+    <option value="256" selected={product?.storage === "256"}>256 GB</option>
+    <option value="512" selected={product?.storage === "512"}>512 GB</option>
+    <option value="1000" selected={product?.storage === "1000"}>1 TB</option>
+  </select>
+
+  <label for="provider">Proveedor</label>
+  <select name="provider" id="provider">
+    <option value="proveedor1" selected={product?.provider === "proveedor1"}>Proveedor 1</option>
+    <option value="proveedor2" selected={product?.provider === "proveedor2"}>Proveedor 2</option>
+  </select>
+
+  <label for="battery">Porcentaje de Bateria (%)</label>
+  <input
+    type="number"
+    id="battery"
+    name="battery"
+    min="0"
+    max="100"
+    step="1"
+    placeholder="98%"
+    value={product?.battery ? product.battery : "100"}
+    required
+  />
+
+  <label for="status">Estado</label>
+  <select name="status" id="status">
+    <option value="nuevo" selected={product?.status === "nuevo"}>Nuevo</option>
+    <option value="usado" selected={product?.status === "usado"}>Usado</option>
+  </select>
+
+  {!product?.id &&
+    <CurrencyInput
+      label="Precio dolar (COP)"
+      id="dollar-cop-input"
+      name="dollar_cop"
+      currency="COP"
+      placeholder="$3.500"
+    />
+
+    <CurrencyInput
+      label="Precio producto (USD)"
+      id="price-input-usd"
+      name="price_usd"
+      currency="USD"
+      placeholder="$1,000"
+    />
+  }
+
+  <button type="submit" class="btn my-2">
+    {product?.id ? "Modificar producto" : "Crear producto"}
+  </button>
+</form>
+
+<script>
+  import { actions, isInputError, isActionError } from "astro:actions";
+  import type { ActionError } from "astro:actions";
+
+  const form = document.querySelector("#product-form") as HTMLFormElement;
+  const idInput = document.querySelector("#id-input") as HTMLInputElement;
+
+  if (idInput) {
+    console.log("editando..", idInput)
+  } else {
+    console.log("creando..", idInput)
+  }
+
+  function showErrors(error: ActionError) {
+    if (error && isInputError(error)) {
+      const plainArray = Object.entries(error.fields).map(
+        ([field, message]) => {
+          return `${field}: ${message}`;
+        }
+      );
+
+      alert("Campos con error:\n" + plainArray.join("\n"));
+
+      return;
+    }
+
+    if (error && isActionError(error)) {
+      alert(error.message);
+      return;
+    }
+  }
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    // Create mode
+    if (!idInput) {
+      // remove non-numeric characters from dollar_cop and price_usd fields
+      const dollar_cop = formData.get("dollar_cop") as string;
+      const price_usd = formData.get("price_usd") as string;
+
+      if (dollar_cop.trim() && typeof dollar_cop === "string") {
+        formData.set("dollar_cop", dollar_cop.replace(/\D/g, ""));
+      }
+
+      if (price_usd.trim() && typeof price_usd === "string") {
+        formData.set("price_usd", price_usd.replace(/\D/g, ""));
+      }
+
+      const { data, error } = await actions.products.create(formData);
+
+      if (error) {
+        showErrors(error);
+        return;
+      }
+
+      alert(data?.message);
+      window.location.href = "/products";
+    }
+
+    // Edit mode
+    if(idInput) {
+      const { data, error } = await actions.products.update(formData);
+
+      if (error) {
+        showErrors(error);
+        return;
+      }
+
+      alert(data?.message);
+      window.location.href = "/products";
+    }
+  });
+</script>

@@ -1,109 +1,16 @@
 ---
-import CurrencyInput from "../../components/CurrencyInput.astro";
 import DashLayout from "../../layouts/DashLayout.astro";
+import FormProduct from "@/components/ProductForm.astro";
 ---
 
 <DashLayout>
   <h2 class="my-2">Nuevo producto</h2>
 
-  <form action="post" id="new-p-form" class="flex flex-col gap-2 my-2 max-w-96">
-    <label for="name">Nombre</label>
-    <input
-      type="text"
-      id="name"
-      name="name"
-      placeholder="Nombre del producto"
-      required
-    />
-
-    <label for="brand">Marca</label>
-    <select name="brand" id="brand">
-      <option value="apple">Apple</option>
-      <option value="samsung">Samsung</option>
-      <option value="otro">Otro</option>
-    </select>
-
-    <label for="imei">IMEI</label>
-    <input
-      type="text"
-      inputmode="numeric"
-      id="imei"
-      name="imei"
-      pattern="[0-9]*"
-      maxlength="15"
-      placeholder="IMEI del producto"
-      required
-    />
-
-    <label for="color">Color</label>
-    <input
-      type="text"
-      id="color"
-      name="color"
-      placeholder="Color del producto"
-      required
-    />
-
-    <label for="storage">Almacenamiento</label>
-    <select name="storage" id="storage">
-      <option value="64">64 GB</option>
-      <option value="128">128 GB</option>
-      <option value="256">256 GB</option>
-      <option value="512">512 GB</option>
-      <option value="1000">1 TB</option>
-    </select>
-
-    <label for="provider">Proveedor</label>
-    <select name="provider" id="provider">
-      <option value="proveedor1">Proveedor 1</option>
-      <option value="proveedor2">Proveedor 2</option>
-    </select>
-
-    <label for="battery">Porcentaje de Bateria (%)</label>
-    <input
-      type="number"
-      id="battery"
-      name="battery"
-      min="0"
-      max="100"
-      step="1"
-      placeholder="98%"
-      value="100"
-      required
-    />
-
-    <label for="status">Estado</label>
-    <select name="status" id="status">
-      <option value="nuevo">Nuevo</option>
-      <option value="usado">Usado</option>
-    </select>
-
-    <CurrencyInput
-      label="Precio dolar (COP)"
-      id="dollar-cop-input"
-      name="dollar_cop"
-      currency="COP"
-      placeholder="$3.500"
-    />
-
-    <CurrencyInput
-      label="Precio producto (USD)"
-      id="price-input-usd"
-      name="price_usd"
-      currency="USD"
-      placeholder="$1,000"
-    />
-
-    <button type="submit" class="btn my-2">Crear producto</button>
-  </form>
+  <FormProduct />
 </DashLayout>
 
 <script>
-  import { actions, isInputError, isActionError } from "astro:actions";
-
-  const form = document.querySelector("#new-p-form") as HTMLFormElement;
-
-  form?.addEventListener("submit", async (e) => {
+  /* form?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = new FormData(form);
 
@@ -140,5 +47,5 @@ import DashLayout from "../../layouts/DashLayout.astro";
 
     alert(data?.message);
     window.location.href = "/products";
-  });
+  }); */
 </script>
