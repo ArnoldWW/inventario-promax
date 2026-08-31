@@ -6,9 +6,10 @@ interface Props {
   currency: "COP" | "USD";
   placeholder?: string;
   value?: string;
+  imported?: boolean;
 }
 
-const { label, id, name, currency, placeholder, value } = Astro.props;
+const { label, id, name, currency, placeholder, value, imported = false } = Astro.props;
 
 const localeByCurrency: Record<string, string> = {
   COP: "es-CO",
@@ -18,17 +19,19 @@ const localeByCurrency: Record<string, string> = {
 const locale = localeByCurrency[currency] ?? "es-CO";
 ---
 
-<label for={id}>{label}</label>
-<input
-  type="text"
-  id={id}
-  name={name}
-  class="currency-input"
-  inputmode="numeric"
-  placeholder={placeholder}
-  value={value}
-  data-locale={locale}
-/>
+<div class={`flex flex-col gap-2 ${imported ? "imported-field" : "non-imported-field hidden"}`}>
+  <label for={id}>{label}</label>
+  <input
+    type="text"
+    id={id}
+    name={name}
+    class="currency-input"
+    inputmode="numeric"
+    placeholder={placeholder}
+    value={value}
+    data-locale={locale}
+  />
+</div>
 
 <script>
   const formatValue = (value: string, locale: string) => {

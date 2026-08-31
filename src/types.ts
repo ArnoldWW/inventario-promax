@@ -10,7 +10,9 @@ export const productSchema = z.object({
   provider: z.string(),
   battery: z.number().min(0).max(100),
   status: z.string(),
-  dollar_cop: z.number().positive(),
-  price_usd: z.number().positive()
+  dollar_cop: z.number(),
+  price_usd: z.number(),
+  origin: z.string(),
+  price_cop: z.number()
 });
 export type Product = z.infer<typeof productSchema>;

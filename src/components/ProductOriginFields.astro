@@ -1,0 +1,93 @@
+---
+import CurrencyInput from "@/components/CurrencyInput.astro"
+---
+
+<div class="flex flex-col gap-1">
+  <p>Origen del producto:</p>
+
+  <div class="flex items-center gap-1">
+    <input class="w-auto" type="radio" id="imported" name="origin" value="importado" autocomplete="off" checked />
+    <label for="imported">Importado</label>
+  </div>
+
+  <div class="flex items-center gap-1">
+    <input class="w-auto" type="radio" id="local" name="origin" value="local" autocomplete="off" />
+    <label for="local">local</label>
+  </div>
+</div>
+
+<CurrencyInput
+  label="Precio dolar (COP)"
+  id="dollar-cop-input"
+  name="dollar_cop"
+  currency="COP"
+  placeholder="$3.500"
+  imported
+/>
+
+<CurrencyInput
+  label="Precio producto (USD)"
+  id="price-input-usd"
+  name="price_usd"
+  currency="USD"
+  placeholder="$1,000"
+  imported
+/>
+
+<CurrencyInput
+  label="Precio producto (COP)"
+  id="price-input-cop"
+  name="price_cop"
+  currency="COP"
+  placeholder="$2.000.000"
+/>
+
+<script>
+// Handle enabling/disabling inputs based on product type
+const productTypeRadios = document.querySelectorAll<HTMLInputElement>(
+  'input[name="origin"]'
+);
+
+productTypeRadios.forEach((radio) => {
+  radio.addEventListener("change", () => {
+    const importedFields = document.querySelectorAll<HTMLInputElement>(
+      ".imported-field"
+    );
+    const importedInputs = document.querySelectorAll<HTMLInputElement>(
+      ".imported-field input"
+    );
+    const nonImportedFields = document.querySelectorAll<HTMLInputElement>(
+      ".non-imported-field"
+    );
+    const nonImportedInputs = document.querySelectorAll<HTMLInputElement>(
+      ".non-imported-field input"
+    );
+
+    if (radio.value === "importado") {
+      importedFields.forEach((field) => {
+        field.style.display = "block";
+      });
+
+      nonImportedFields.forEach((field) => {
+        field.style.display = "none";
+      });
+
+      nonImportedInputs.forEach((input) => {
+        input.value = "";
+      });
+    } else {
+      importedFields.forEach((field) => {
+        field.style.display = "none";
+      });
+
+      nonImportedFields.forEach((field) => {
+        field.style.display = "block";
+      });
+
+      importedInputs.forEach((input) => {
+        input.value = "";
+      });
+    }
+  });
+})
+</script>

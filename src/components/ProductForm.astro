@@ -1,6 +1,6 @@
 ---
 import type { Product } from "@/types";
-import CurrencyInput from "@/components/CurrencyInput.astro";
+import ProductOriginFields from "@/components/ProductOriginFields.astro";
 
 interface Props {
   product?: Product
@@ -89,21 +89,7 @@ const { product } = Astro.props as Props;
   </select>
 
   {!product?.id &&
-    <CurrencyInput
-      label="Precio dolar (COP)"
-      id="dollar-cop-input"
-      name="dollar_cop"
-      currency="COP"
-      placeholder="$3.500"
-    />
-
-    <CurrencyInput
-      label="Precio producto (USD)"
-      id="price-input-usd"
-      name="price_usd"
-      currency="USD"
-      placeholder="$1,000"
-    />
+    <ProductOriginFields />
   }
 
   <button type="submit" class="btn my-2">
@@ -124,6 +110,7 @@ const { product } = Astro.props as Props;
     console.log("creando..", idInput)
   }
 
+  // Function to show errors in an alert
   function showErrors(error: ActionError) {
     if (error && isInputError(error)) {
       const plainArray = Object.entries(error.fields).map(
@@ -143,15 +130,19 @@ const { product } = Astro.props as Props;
     }
   }
 
+  // Handle form submission
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = new FormData(form);
+
+    //return console.log(formData);
 
     // Create mode
     if (!idInput) {
       // remove non-numeric characters from dollar_cop and price_usd fields
       const dollar_cop = formData.get("dollar_cop") as string;
       const price_usd = formData.get("price_usd") as string;
+      const price_cop = formData.get("price_cop") as string;
 
       if (dollar_cop.trim() && typeof dollar_cop === "string") {
         formData.set("dollar_cop", dollar_cop.replace(/\D/g, ""));
@@ -160,6 +151,23 @@ const { product } = Astro.props as Props;
       if (price_usd.trim() && typeof price_usd === "string") {
         formData.set("price_usd", price_usd.replace(/\D/g, ""));
       }
+
+      if (price_cop.trim() && typeof price_cop === "string") {
+        formData.set("price_cop", price_cop.replace(/\D/g, ""));
+      }
+
+      // If the product is imported, local values to 0
+      if (formData.get("origin") === "importado") {
+        formData.set("price_cop", "0");
+      }
+
+      // If the product is local, imported values to 0
+      if (formData.get("origin") === "local") {
+        formData.set("dollar_cop", "0");
+        formData.set("price_usd", "0");
+      }
+
+      //return console.log(formData);
 
       const { data, error } = await actions.products.create(formData);
 

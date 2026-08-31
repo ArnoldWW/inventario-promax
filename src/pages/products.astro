@@ -25,7 +25,7 @@ const totalPages = Math.max(1, Math.ceil(Number(count) / PAGE_SIZE));
 
 <DashLayout>
   <a href="/products/new" class="btn my-5">Nuevo producto</a>
-  
+
   {
     rows.length > 0 && (
       <div class="flex items-center gap-2 mb-2">
@@ -44,8 +44,8 @@ const totalPages = Math.max(1, Math.ceil(Number(count) / PAGE_SIZE));
     rows.length === 0 ? (
       <p class="mt-1">No hay productos registrados.</p>
     ) : (
-      <div class="overflow-x-auto pb-3 md:pb-0">
-        <table class="mb-10">
+      <div class="overflow-x-auto pb-3">
+        <table>
           <thead>
             <tr>
               <th>Nombre</th>
@@ -88,7 +88,7 @@ const totalPages = Math.max(1, Math.ceil(Number(count) / PAGE_SIZE));
                   <a href={`/products/${row.id}/edit`} class="btn">
                     Editar
                   </a>
-                  
+
                   <button
                     class="hidden btn delete-btn bg-red-400"
                     data-id={String(row.id)}
@@ -160,5 +160,5 @@ const totalPages = Math.max(1, Math.ceil(Number(count) / PAGE_SIZE));
     });
   }
 
-  
+
 </script>

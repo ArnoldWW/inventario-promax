@@ -14,7 +14,11 @@ const { rows } = await turso.execute("SELECT * FROM products WHERE id = ?", [
 
 const product = rows[0];
 
-const localeDate = new Date(String(product.created_at)).toLocaleString(
+if (!product) {
+  return Astro.redirect("/products");
+}
+
+const localDate = new Date(String(product.created_at)).toLocaleString(
   "es-CO",
   {
     timeZone: "America/Bogota",
@@ -61,6 +65,7 @@ const localeDate = new Date(String(product.created_at)).toLocaleString(
         <p>
           <strong>Estado:</strong> {product.status}
         </p>
+
         <p>
           <strong>Precio dolar (COP):</strong> {product.dollar_cop}
         </p>
@@ -69,7 +74,7 @@ const localeDate = new Date(String(product.created_at)).toLocaleString(
         </p>
 
         <p>
-          <strong>Creado:</strong> {localeDate}
+          <strong>Creado:</strong> {localDate}
         </p>
 
         <a href={`/products/${product.id}/edit`} class="btn">
