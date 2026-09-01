@@ -3,15 +3,17 @@ import type { Product } from "@/types";
 import ProductOriginFields from "@/components/ProductOriginFields.astro";
 
 interface Props {
-  product?: Product
+  product?: Product;
 }
 
 const { product } = Astro.props as Props;
 ---
 
 <form action="post" id="product-form" class="flex flex-col gap-2 my-2 max-w-96">
-  {product?.id &&
-    <input id="id-input" type="hidden" name="id" value={product?.id ?? ""} />
+  {
+    product?.id && (
+      <input id="id-input" type="hidden" name="id" value={product?.id ?? ""} />
+    )
   }
 
   <label for="name">Nombre</label>
@@ -27,7 +29,9 @@ const { product } = Astro.props as Props;
   <label for="brand">Marca</label>
   <select name="brand" id="brand">
     <option value="apple" selected={product?.brand === "apple"}>Apple</option>
-    <option value="samsung" selected={product?.brand === "samsung"}>Samsung</option>
+    <option value="samsung" selected={product?.brand === "samsung"}
+      >Samsung</option
+    >
     <option value="otro" selected={product?.brand === "otro"}>Otro</option>
   </select>
 
@@ -65,8 +69,12 @@ const { product } = Astro.props as Props;
 
   <label for="provider">Proveedor</label>
   <select name="provider" id="provider">
-    <option value="proveedor1" selected={product?.provider === "proveedor1"}>Proveedor 1</option>
-    <option value="proveedor2" selected={product?.provider === "proveedor2"}>Proveedor 2</option>
+    <option value="proveedor1" selected={product?.provider === "proveedor1"}
+      >Proveedor 1</option
+    >
+    <option value="proveedor2" selected={product?.provider === "proveedor2"}
+      >Proveedor 2</option
+    >
   </select>
 
   <label for="battery">Porcentaje de Bateria (%)</label>
@@ -85,12 +93,15 @@ const { product } = Astro.props as Props;
   <label for="status">Estado</label>
   <select name="status" id="status">
     <option value="nuevo" selected={product?.status === "nuevo"}>Nuevo</option>
-    <option value="usado" selected={product?.status === "usado"}>Usado</option>
+    <option value="exhibicion" selected={product?.status === "exhibicion"}>
+      Exhibición
+    </option>
+    <option value="usado" selected={product?.status === "usado"}>
+      Retoma/Usado
+    </option>
   </select>
 
-  {!product?.id &&
-    <ProductOriginFields />
-  }
+  {!product?.id && <ProductOriginFields />}
 
   <button type="submit" class="btn my-2">
     {product?.id ? "Modificar producto" : "Crear producto"}
@@ -105,9 +116,9 @@ const { product } = Astro.props as Props;
   const idInput = document.querySelector("#id-input") as HTMLInputElement;
 
   if (idInput) {
-    console.log("editando..", idInput)
+    console.log("editando..", idInput);
   } else {
-    console.log("creando..", idInput)
+    console.log("creando..", idInput);
   }
 
   // Function to show errors in an alert
@@ -181,7 +192,7 @@ const { product } = Astro.props as Props;
     }
 
     // Edit mode
-    if(idInput) {
+    if (idInput) {
       const { data, error } = await actions.products.update(formData);
 
       if (error) {

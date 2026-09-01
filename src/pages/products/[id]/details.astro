@@ -1,6 +1,8 @@
 ---
 import DashLayout from "@/layouts/DashLayout.astro";
 import { turso } from "@/turso";
+import { productSchema } from "@/types";
+import { formatCurrency } from "@/utils";
 
 const params = Astro.params;
 
@@ -12,20 +14,19 @@ const { rows } = await turso.execute("SELECT * FROM products WHERE id = ?", [
   params.id
 ]);
 
-const product = rows[0];
+const raw = rows[0];
+
+const product = raw ? productSchema.parse(raw) : undefined;
 
 if (!product) {
   return Astro.redirect("/products");
 }
 
-const localDate = new Date(String(product.created_at)).toLocaleString(
-  "es-CO",
-  {
-    timeZone: "America/Bogota",
-    dateStyle: "short",
-    timeStyle: "short"
-  }
-);
+const localDate = new Date(String(product.created_at)).toLocaleString("es-CO", {
+  timeZone: "America/Bogota",
+  dateStyle: "short",
+  timeStyle: "short"
+});
 ---
 
 <DashLayout>
@@ -39,7 +40,8 @@ const localDate = new Date(String(product.created_at)).toLocaleString(
     ) : (
       <div class="flex flex-col gap-2 my-2 max-w-96">
         <p>
-          <strong>Nombre:</strong> {product.name}
+          <strong>Nombre:</strong> {product.name} - (
+          {product.origin.toUpperCase()})
         </p>
         <p>
           <strong>Marca:</strong> {product.brand}
@@ -66,12 +68,24 @@ const localDate = new Date(String(product.created_at)).toLocaleString(
           <strong>Estado:</strong> {product.status}
         </p>
 
-        <p>
-          <strong>Precio dolar (COP):</strong> {product.dollar_cop}
-        </p>
-        <p>
-          <strong>Precio producto (USD):</strong> {product.price_usd}
-        </p>
+        {product.origin === "importado" && (
+          <>
+            <p>
+              <strong>Precio producto (USD):</strong>{" "}
+              {formatCurrency(product.price_usd, "USD")}
+            </p>
+            <p>
+              <strong>Precio dolar (COP):</strong>{" "}
+              {formatCurrency(product.dollar_cop)}
+            </p>
+          </>
+        )}
+
+        {product.origin === "local" && (
+          <p>
+            <strong>Precio producto (COP):</strong> {product.price_cop}
+          </p>
+        )}
 
         <p>
           <strong>Creado:</strong> {localDate}

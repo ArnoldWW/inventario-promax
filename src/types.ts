@@ -9,6 +9,7 @@ export const productSchema = z.object({
   storage: z.string(),
   provider: z.string(),
   battery: z.number().min(0).max(100),
+  created_at: z.string(),
   status: z.string(),
   dollar_cop: z.number(),
   price_usd: z.number(),
