@@ -26,3 +26,4 @@ pnpm-debug.log*
 # Wrangler local state and caches
 .wrangler/
 
+pnpm-workspace.yaml
