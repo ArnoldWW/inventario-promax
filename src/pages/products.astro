@@ -1,7 +1,7 @@
 ---
 import DashLayout from "../layouts/DashLayout.astro";
 import { turso } from "../turso";
-import formatCurrency from "../utils";
+import { formatCurrency, calculateTotalValue } from "../utils";
 
 const PAGE_SIZE = 5;
 const { searchParams } = Astro.url;
@@ -16,7 +16,7 @@ const [
 ] = await turso.batch([
   { sql: "SELECT COUNT(*) AS count FROM products", args: [] },
   {
-    sql: "SELECT id, name, imei, dollar_cop, price_usd, status FROM products ORDER BY created_at DESC LIMIT ? OFFSET ?",
+    sql: "SELECT id, name, imei, dollar_cop, price_usd, status, origin, price_cop FROM products ORDER BY created_at DESC LIMIT ? OFFSET ?",
     args: [PAGE_SIZE, offset]
   }
 ]);
@@ -50,8 +50,10 @@ const totalPages = Math.max(1, Math.ceil(Number(count) / PAGE_SIZE));
             <tr>
               <th>Nombre</th>
               <th>IMEI</th>
+              <th>Origen del producto</th>
               <th>Precio dolar (COP)</th>
               <th>Precio producto (USD)</th>
+              <th>Precio producto (COP)</th>
               <th>Estado</th>
               <th>Valor total</th>
               <th>Acciones</th>
@@ -60,7 +62,7 @@ const totalPages = Math.max(1, Math.ceil(Number(count) / PAGE_SIZE));
           <tbody>
             {rows.map((row) => (
               <tr>
-                <td>{row.name}</td>
+                <td class={row.status === "nuevo" ? "bg-green-100" : "bg-blue-100"}>{row.name}</td>
                 <td>
                   {row.imei
                     ? String(row.imei)
@@ -68,17 +70,13 @@ const totalPages = Math.max(1, Math.ceil(Number(count) / PAGE_SIZE));
                         .padStart(String(row.imei).length, "*")
                     : "--"}
                 </td>
+                <td>{row.origin}</td>
                 <td>{formatCurrency(Number(row.dollar_cop))}</td>
                 <td>{formatCurrency(Number(row.price_usd), "USD")}</td>
+                <td>{formatCurrency(Number(row.price_cop), "COP")}</td>
                 <td>{row.status}</td>
                 <td>
-                  {row.status === "nuevo"
-                    ? formatCurrency(
-                        Number(row.dollar_cop) * Number(row.price_usd) + 100000
-                      )
-                    : formatCurrency(
-                        Number(row.dollar_cop) * Number(row.price_usd) + 80000
-                      )}
+                  {calculateTotalValue(String(row.status), String(row.origin), Number(row.dollar_cop), Number(row.price_usd), Number(row.price_cop))}
                 </td>
 
                 <td class="flex flex-col gap-1 border-none" id="table-actions">
@@ -159,6 +157,4 @@ const totalPages = Math.max(1, Math.ceil(Number(count) / PAGE_SIZE));
       });
     });
   }
-
-
 </script>
