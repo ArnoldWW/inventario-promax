@@ -1,0 +1,74 @@
+---
+import CurrencyInput from "@/components/CurrencyInput.astro";
+interface Props {
+  productId: string;
+}
+const { productId } = Astro.props;
+---
+
+<!-- CREATE TABLE `sales` (
+	`id` text PRIMARY KEY,
+	`product_id` text NOT NULL UNIQUE,
+	`customer_name` text NOT NULL,
+	`accessories` text,
+	`notes` text,
+	`price` integer NOT NULL,
+	`created_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	CONSTRAINT `fk_sales_product_id_products_id_fk` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`)
+); -->
+<form id="sales-form" class="flex flex-col gap-2 my-2" autocomplete="off">
+  <input type="hidden" id="product_id" name="product_id" value={productId} />
+
+  <label for="customer_name">Nombre del cliente</label>
+  <input
+    type="text"
+    id="customer_name"
+    name="customer_name"
+    placeholder="Nombre del cliente"
+    value=""
+    required
+  />
+
+  <CurrencyInput
+    label="Precio de venta"
+    id="sale-price"
+    name="price"
+    currency="COP"
+    placeholder="$3.500.000"
+  />
+
+  <label for="accessories">Accesorios</label>
+  <textarea
+    id="accessories"
+    name="accessories"
+    placeholder="Accesorios del producto"
+    rows="2"></textarea>
+
+  <label for="notes">Notas</label>
+  <textarea id="notes" name="notes" placeholder="Notas adicionales" rows="4"
+  ></textarea>
+
+  <button type="submit" class="btn">Vender producto</button>
+</form>
+
+<script>
+  import { actions, isInputError, isActionError } from "astro:actions";
+
+  const form = document.querySelector<HTMLFormElement>("#sales-form");
+
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+
+      const product_id = String(data.get("product_id"));
+      data.set("product_id", product_id);
+
+      // Add product_id to form data
+      //data.set("product_id", product_id);
+      console.log(data);
+
+      const result = await actions.sales.create(data);
+    });
+  }
+</script>
