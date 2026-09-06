@@ -14,14 +14,20 @@ if (!params.id) {
 const { rows } = await turso.execute("SELECT * FROM products WHERE id = ?", [
   params.id
 ]);
-
 const raw = rows[0];
-
 const product = raw ? productSchema.parse(raw) : undefined;
 
 if (!product) {
   return Astro.redirect("/products");
 }
+
+// Query products table and sale table to get the sale of the product
+const { rows: salesRows } = await turso.execute(
+  "SELECT customer_name FROM sales WHERE product_id = ? LIMIT 1",
+  [product.id]
+);
+const sale = salesRows[0];
+const isSold = Boolean(sale);
 
 const localDate = new Date(String(product.created_at)).toLocaleString("es-CO", {
   timeZone: "America/Bogota",
@@ -33,6 +39,12 @@ const localDate = new Date(String(product.created_at)).toLocaleString("es-CO", {
 <DashLayout>
   <a href="/products" class="btn my-5 w-auto">&larr;</a>
   <div class="flex flex-col gap-5 max-w-96 pb-5">
+    {isSold && (
+      <p class="text-green-500 uppercase font-bold bg-green-100 p-2 text-center">
+        PRODUCTO VENDIDO A {sale.customer_name}
+      </p>
+    )}
+
     <div>
       <h2>Detalles del producto</h2>
 
@@ -110,11 +122,12 @@ const localDate = new Date(String(product.created_at)).toLocaleString("es-CO", {
     </div>
 
     <div class="flex flex-col gap-2 my-2">
-      <h2>
-        Vender - <span class="text-blue-500"> {product.name}</span>
-      </h2>
-
-      <SalesForm productId={product.id} />
+      {!isSold ?
+        <h2>
+          Vender - <span class="text-blue-500"> {product.name}</span>
+        </h2>
+        <SalesForm productId={product.id} />
+      : null}
     </div>
   </div>
 </DashLayout>

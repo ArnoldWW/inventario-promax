@@ -1,7 +1,33 @@
 ---
 import DashLayout from "../layouts/DashLayout.astro";
+import { turso } from "../turso";
+
+const { rows } = await turso.execute(
+  `SELECT s.customer_name, s.price, s.notes, s.created_at,
+         p.name, p.imei, p.color, p.storage, p.status, p.origin, p.id
+  FROM sales s
+  JOIN products p ON p.id = s.product_id
+  ORDER BY s.created_at DESC`
+);
+
+console.log("Sales rows:", rows);
 ---
 
 <DashLayout>
   <h2>Sales</h2>
+
+  {
+    rows.length === 0 ? (
+      <p class="mt-1">No hay ventas registradas.</p>
+    ) : (
+      <div>
+        <p>{rows.length} ventas registradas.</p>
+        {rows.map((sale) => (
+          <a href={`/products/${sale.id}/details`} class="block hover:underline">
+            {sale.customer_name} - {sale.name}
+          </a>
+        ))}
+      </div>
+    )
+  }
 </DashLayout>

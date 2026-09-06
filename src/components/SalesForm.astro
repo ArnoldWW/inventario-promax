@@ -10,7 +10,6 @@ const { productId } = Astro.props;
 	`id` text PRIMARY KEY,
 	`product_id` text NOT NULL UNIQUE,
 	`customer_name` text NOT NULL,
-	`accessories` text,
 	`notes` text,
 	`price` integer NOT NULL,
 	`created_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -30,45 +29,72 @@ const { productId } = Astro.props;
   />
 
   <CurrencyInput
-    label="Precio de venta"
+    label="Precio de venta (COP)"
     id="sale-price"
     name="price"
     currency="COP"
     placeholder="$3.500.000"
   />
 
-  <label for="accessories">Accesorios</label>
+  <label for="accessories">Notas de la venta</label>
   <textarea
-    id="accessories"
-    name="accessories"
-    placeholder="Accesorios del producto"
+    id="notes"
+    name="notes"
+    placeholder="Accesorios, observaciones, etc."
     rows="2"></textarea>
-
-  <label for="notes">Notas</label>
-  <textarea id="notes" name="notes" placeholder="Notas adicionales" rows="4"
-  ></textarea>
 
   <button type="submit" class="btn">Vender producto</button>
 </form>
 
 <script>
   import { actions, isInputError, isActionError } from "astro:actions";
+  import type { ActionError } from "astro:actions";
 
   const form = document.querySelector<HTMLFormElement>("#sales-form");
 
   if (form) {
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const data = new FormData(form);
+      const formData = new FormData(form);
 
-      const product_id = String(data.get("product_id"));
-      data.set("product_id", product_id);
+      const product_id = String(formData.get("product_id"));
+      formData.set("product_id", product_id);
 
-      // Add product_id to form data
-      //data.set("product_id", product_id);
-      console.log(data);
+      // Remove non-numeric characters from price field
+      const sale_price = formData.get("price") as string;
+      if (sale_price.trim() && typeof sale_price === "string") {
+        formData.set("price", sale_price.replace(/\D/g, ""));
+      }
+      console.log(formData);
 
-      const result = await actions.sales.create(data);
+      // Function to show errors in an alert
+      function showErrors(error: ActionError) {
+        if (error && isInputError(error)) {
+          const plainArray = Object.entries(error.fields).map(
+            ([field, message]) => {
+              return `${field}: ${message}`;
+            }
+          );
+
+          alert("Campos con error:\n" + plainArray.join("\n"));
+
+          return;
+        }
+
+        if (error && isActionError(error)) {
+          alert(error.message);
+          return;
+        }
+      }
+
+      const { data, error} = await actions.sales.create(formData);
+
+      if (error) {
+        showErrors(error);
+        return;
+      }
+
+      alert(data?.message);
     });
   }
 </script>
