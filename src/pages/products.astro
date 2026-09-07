@@ -120,17 +120,22 @@ const totalPages = Math.max(1, Math.ceil(Number(count) / PAGE_SIZE));
         </table>
       </div>
 
-      <div class="flex justify-center gap-2">
+      <div class="flex justify-start items-center gap-2">
         {page > 1 && (
-          <a href={`/products?page=${page - 1}`} class="btn btn-rpimary">
-            Anterior
+          <a href={`/products?page=${page - 1}`} class="btn btn-primary">
+            &larr;
           </a>
         )}
         {page < totalPages && (
           <a href={`/products?page=${page + 1}`} class="btn btn-primary">
-            Siguiente
+            &rarr;
           </a>
         )}
+        { page > 1 || page < totalPages ? (
+          <span class="text-sm">
+            Página {page} de {totalPages}
+          </span>
+        ) : null }
       </div>
     )
   }
