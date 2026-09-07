@@ -1,6 +1,6 @@
 ---
 import type { Product, Sale } from '@/types';
-import { formatCurrency, calculateTotalValue } from '@/utils';
+import { formatCurrency, calculateTotalValue, formatDate } from '@/utils';
 
 interface Props {
 	product: Product,
@@ -10,11 +10,7 @@ interface Props {
 const { product, sale } = Astro.props as Props;
 
 const saleDate = sale
-  ? new Date(String(sale.created_at)).toLocaleString("es-CO", {
-      timeZone: "America/Bogota",
-      dateStyle: "short",
-      timeStyle: "short"
-    })
+  ? formatDate(sale.created_at)
   : null;
 
 const productValue = calculateTotalValue(
@@ -63,4 +59,44 @@ const profit = salePrice - productValue;
     <strong>Notas: </strong>
     {sale?.notes || "-"}
   </p>
+
+  <button id="cancel-sale" class="btn bg-red-500 my-3" data-id={sale.id}>
+    Cancelar venta
+  </button>
 </div>
+
+<script>
+  import { actions } from "astro:actions";
+  const cancelSaleButton = document.querySelector<HTMLButtonElement>("#cancel-sale");
+
+  cancelSaleButton?.addEventListener("click", async () => {
+    const confirmCancel = confirm(
+      "¿Estás seguro de que deseas cancelar esta venta? Esta acción no se puede deshacer."
+    );
+
+    if (!confirmCancel) {
+      return;
+    }
+
+    // Get the sale ID from the button's data attribute
+    const saleId = cancelSaleButton.dataset.id;
+    const formData = new FormData();
+    formData.set("id", saleId || "");
+
+    try {
+      const { data, error } = await actions.sales.cancel(formData);
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      alert(data?.message || "Venta cancelada exitosamente");
+      // Refresh the page to reflect the changes
+      window.location.href = "/products";
+
+    } catch (error) {
+      console.error(error);
+      alert("Ocurrió un error al cancelar la venta");
+    }
+  });
+</script>

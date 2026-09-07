@@ -16,9 +16,17 @@ export function calculateTotalValue(
     if (status === "nuevo") {
       return dollar_cop * price_usd + 100000;
     } else {
-      return dollar_cop * price_usd * 80000;
+      return dollar_cop * price_usd + 80000;
     }
   } else {
     return price_cop;
   }
+}
+
+export function formatDate(date: string) {
+  return new Date(date).toLocaleString("es-CO", {
+    timeZone: "America/Bogota",
+    dateStyle: "short",
+    timeStyle: "short"
+  });
 }

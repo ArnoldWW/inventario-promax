@@ -1,18 +1,12 @@
 ---
 import type { Product } from '@/types';
-import { formatCurrency, calculateTotalValue } from '@/utils';
+import { formatCurrency, calculateTotalValue, formatDate } from '@/utils';
 
 interface Props {
 	product: Product
 }
 
 const { product } = Astro.props as Props;
-
-const localDate = new Date(String(product.created_at)).toLocaleString("es-CO", {
-  timeZone: "America/Bogota",
-  dateStyle: "short",
-  timeStyle: "short"
-});
 ---
 
 <div class="flex flex-col gap-2 my-2">
@@ -65,7 +59,7 @@ const localDate = new Date(String(product.created_at)).toLocaleString("es-CO", {
           {formatCurrency(product.dollar_cop)}
         </p>
         <p>
-          <strong>Valor adicional: </strong>
+          <strong>Valor adicional (nuevo / exhibición) (COP): </strong>
           {product.status === "nuevo" ? "$ 100.000" : "$ 80.000"}
         </p>
 
@@ -96,7 +90,7 @@ const localDate = new Date(String(product.created_at)).toLocaleString("es-CO", {
 
   <p>
     <strong>Creado:</strong>
-    {localDate}
+    {formatDate(product.created_at)}
   </p>
 
   <a href={`/products/${product.id}/edit`} class="btn">
