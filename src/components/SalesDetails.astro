@@ -1,0 +1,66 @@
+---
+import type { Product, Sale } from '@/types';
+import { formatCurrency, calculateTotalValue } from '@/utils';
+
+interface Props {
+	product: Product,
+	sale: Sale
+}
+
+const { product, sale } = Astro.props as Props;
+
+const saleDate = sale
+  ? new Date(String(sale.created_at)).toLocaleString("es-CO", {
+      timeZone: "America/Bogota",
+      dateStyle: "short",
+      timeStyle: "short"
+    })
+  : null;
+
+const productValue = calculateTotalValue(
+  String(product.status),
+  String(product.origin),
+  Number(product.dollar_cop),
+  Number(product.price_usd),
+  Number(product.price_cop)
+);
+const salePrice = Number(sale.price);
+const profit = salePrice - productValue;
+---
+
+<div class="flex flex-col gap-2 my-2">
+  <p class="text-green-500 uppercase font-bold bg-green-100 p-2 text-center">
+    PRODUCTO VENDIDO A {sale.customer_name}
+  </p>
+
+  <h2>
+    Datos de la venta
+  </h2>
+  <p>
+    <strong>ID de la venta: </strong>
+    {sale.id}
+  </p>
+  <p>
+    <strong>Cliente: </strong>
+    {sale.customer_name}
+  </p>
+  <p>
+    <strong>Precio de venta: </strong>
+    {formatCurrency(Number(sale.price))}
+  </p>
+
+  <p>
+    <strong>Ganancia: </strong>
+    {formatCurrency(profit)}
+  </p>
+
+  <p>
+    <strong>Fecha de venta: </strong>
+    {saleDate}
+  </p>
+
+  <p>
+    <strong>Notas: </strong>
+    {sale?.notes || "-"}
+  </p>
+</div>

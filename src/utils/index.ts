@@ -14,11 +14,11 @@ export function calculateTotalValue(
 ) {
   if (origin === "importado") {
     if (status === "nuevo") {
-      return formatCurrency(dollar_cop * price_usd + 100000);
+      return dollar_cop * price_usd + 100000;
     } else {
-      return formatCurrency(dollar_cop * price_usd * 80000);
+      return dollar_cop * price_usd * 80000;
     }
   } else {
-    return formatCurrency(price_cop);
+    return price_cop;
   }
 }

@@ -1,7 +1,7 @@
 ---
-import DashLayout from "../layouts/DashLayout.astro";
-import { turso } from "../turso";
-import { formatCurrency, calculateTotalValue } from "../utils";
+import DashLayout from "@/layouts/DashLayout.astro";
+import { turso } from "@/turso";
+import { formatCurrency, calculateTotalValue } from "@/utils";
 
 const PAGE_SIZE = 5;
 const { searchParams } = Astro.url;
@@ -88,7 +88,15 @@ const totalPages = Math.max(1, Math.ceil(Number(count) / PAGE_SIZE));
                 <td>{row.origin === "local" ? formatCurrency(Number(row.price_cop), "COP") : "-"}</td>
                 <td>{row.status}</td>
                 <td>
-                  {calculateTotalValue(String(row.status), String(row.origin), Number(row.dollar_cop), Number(row.price_usd), Number(row.price_cop))}
+                  {formatCurrency(
+                    calculateTotalValue(
+                      String(row.status),
+                      String(row.origin),
+                      Number(row.dollar_cop),
+                      Number(row.price_usd),
+                      Number(row.price_cop)
+                    )
+                  )}
                 </td>
 
                 <td class="flex flex-col gap-1 border-none" id="table-actions">

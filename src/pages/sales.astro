@@ -1,10 +1,11 @@
 ---
-import DashLayout from "../layouts/DashLayout.astro";
-import { turso } from "../turso";
+import DashLayout from "@/layouts/DashLayout.astro";
+import { turso } from "@/turso";
+import { formatCurrency, calculateTotalValue } from "@/utils";
 
 const { rows } = await turso.execute(
   `SELECT s.customer_name, s.price, s.notes, s.created_at,
-         p.name, p.imei, p.color, p.storage, p.status, p.origin, p.id
+         p.name, p.imei, p.status, p.origin, p.id, p.price_usd, p.price_cop, p.dollar_cop
   FROM sales s
   JOIN products p ON p.id = s.product_id
   ORDER BY s.created_at DESC`
@@ -14,19 +15,57 @@ console.log("Sales rows:", rows);
 ---
 
 <DashLayout>
-  <h2>Sales</h2>
-
   {
     rows.length === 0 ? (
       <p class="mt-1">No hay ventas registradas.</p>
     ) : (
-      <div>
-        <p>{rows.length} ventas registradas.</p>
-        {rows.map((sale) => (
-          <a href={`/products/${sale.id}/details`} class="block hover:underline">
-            {sale.customer_name} - {sale.name}
-          </a>
-        ))}
+      <div class="overflow-x-auto pb-3 my-5">
+        <table>
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Cliente</th>
+              <th>Precio de venta (COP)</th>
+              <th>Precio del producto (COP)</th>
+              <th>Ganancia (COP)</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => {
+              const productValue = calculateTotalValue(
+                String(row.status),
+                String(row.origin),
+                Number(row.dollar_cop),
+                Number(row.price_usd),
+                Number(row.price_cop)
+              );
+              const salePrice = Number(row.price);
+              const profit = salePrice - productValue;
+
+              return (
+                <tr>
+                  <td>
+                    {row.name} - {row.status}
+                  </td>
+                  <td>{row.customer_name}</td>
+
+                  <td>{formatCurrency(salePrice)}</td>
+
+                  <td>{formatCurrency(productValue)}</td>
+
+                  <td>{formatCurrency(profit)}</td>
+
+                  <td class="flex flex-col gap-2 border-0">
+                    <a href={`/products/${row.id}/details`} class="btn">
+                      Ver detalles
+                    </a>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
     )
   }

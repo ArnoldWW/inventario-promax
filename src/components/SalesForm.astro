@@ -87,7 +87,7 @@ const { productId } = Astro.props;
         }
       }
 
-      const { data, error} = await actions.sales.create(formData);
+      const { data, error } = await actions.sales.create(formData);
 
       if (error) {
         showErrors(error);
@@ -95,6 +95,7 @@ const { productId } = Astro.props;
       }
 
       alert(data?.message);
+      window.location.href = `/sales`;
     });
   }
 </script>

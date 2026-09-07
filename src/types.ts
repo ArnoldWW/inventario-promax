@@ -17,3 +17,13 @@ export const productSchema = z.object({
   price_cop: z.number()
 });
 export type Product = z.infer<typeof productSchema>;
+
+export const saleSchema = z.object({
+  id: z.string(),
+  product_id: z.string(),
+  customer_name: z.string(),
+  notes: z.string().optional(),
+  price: z.number(),
+  created_at: z.string()
+});
+export type Sale = z.infer<typeof saleSchema>;

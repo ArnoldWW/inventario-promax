@@ -1,0 +1,105 @@
+---
+import type { Product } from '@/types';
+import { formatCurrency, calculateTotalValue } from '@/utils';
+
+interface Props {
+	product: Product
+}
+
+const { product } = Astro.props as Props;
+
+const localDate = new Date(String(product.created_at)).toLocaleString("es-CO", {
+  timeZone: "America/Bogota",
+  dateStyle: "short",
+  timeStyle: "short"
+});
+---
+
+<div class="flex flex-col gap-2 my-2">
+  <p>
+    <strong>Nombre: </strong>
+    {product.name} - (
+    {product.origin.toUpperCase()})
+  </p>
+  <p>
+    <strong>Marca: </strong>
+    {product.brand}
+  </p>
+  <p>
+    <strong>IMEI: </strong>
+    {product.imei}
+  </p>
+
+  <p>
+    <strong>Color: </strong>
+    {product.color}
+  </p>
+  <p>
+    <strong>Almacenamiento: </strong>
+    {product.storage} GB
+  </p>
+
+  <p>
+    <strong>Proveedor: </strong>
+    {product.provider}
+  </p>
+  <p>
+    <strong>Batería: </strong>
+    {product.battery}%
+  </p>
+
+  <p>
+    <strong>Estado: </strong>
+    {product.status}
+  </p>
+
+  {
+    product.origin === "importado" && (
+      <Fragment>
+        <p>
+          <strong>Precio producto (USD): </strong>{" "}
+          {formatCurrency(product.price_usd, "USD")}
+        </p>
+        <p>
+          <strong>Precio dolar (COP): </strong>{" "}
+          {formatCurrency(product.dollar_cop)}
+        </p>
+        <p>
+          <strong>Valor adicional: </strong>
+          {product.status === "nuevo" ? "$ 100.000" : "$ 80.000"}
+        </p>
+
+        <p>
+          <strong>Valor total (COP):</strong>{" "}
+          {formatCurrency(
+            calculateTotalValue(
+              String(product.status),
+              String(product.origin),
+              Number(product.dollar_cop),
+              Number(product.price_usd),
+              Number(product.price_cop)
+            )
+          )}
+        </p>
+      </Fragment>
+    )
+  }
+
+  {
+    product.origin === "local" && (
+      <p>
+        <strong>Precio producto (COP):</strong>{" "}
+        {formatCurrency(product.price_cop)}
+      </p>
+    )
+  }
+
+  <p>
+    <strong>Creado:</strong>
+    {localDate}
+  </p>
+
+  <a href={`/products/${product.id}/edit`} class="btn">
+    Editar producto
+  </a>
+</div>
