@@ -19,9 +19,9 @@ const product = raw ? productSchema.parse(raw) : undefined;
 ---
 
 <DashLayout>
-  <a href="/products" class="btn my-5">&larr;</a>
+  <a href="/products" class="btn btn-primary my-5">&larr;</a>
 
   <h2 class="my-2">Editar producto</h2>
 
-  <FormProduct product={product}  />
+  <FormProduct product={product} />
 </DashLayout>
