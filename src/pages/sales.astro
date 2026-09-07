@@ -57,7 +57,10 @@ console.log("Sales rows:", rows);
                   <td>{formatCurrency(profit)}</td>
 
                   <td class="flex flex-col gap-2 border-0">
-                    <a href={`/products/${row.id}/details`} class="btn">
+                    <a
+                      href={`/products/${row.id}/details`}
+                      class="btn btn-primary"
+                    >
                       Ver detalles
                     </a>
                   </td>

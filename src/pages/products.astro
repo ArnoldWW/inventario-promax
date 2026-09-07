@@ -36,7 +36,7 @@ const totalPages = Math.max(1, Math.ceil(Number(count) / PAGE_SIZE));
 ---
 
 <DashLayout>
-  <a href="/products/new" class="btn my-5">Nuevo producto</a>
+  <a href="/products/new" class="btn btn-primary my-5">Nuevo producto</a>
 
   {
     rows.length > 0 && (
@@ -100,15 +100,15 @@ const totalPages = Math.max(1, Math.ceil(Number(count) / PAGE_SIZE));
                 </td>
 
                 <td class="flex flex-col gap-1 border-none" id="table-actions">
-                  <a href={`/products/${row.id}/details`} class="btn">
+                  <a href={`/products/${row.id}/details`} class="btn btn-primary">
                     Detalles
                   </a>
-                  <a href={`/products/${row.id}/edit`} class="btn">
+                  <a href={`/products/${row.id}/edit`} class="btn btn-primary">
                     Editar
                   </a>
 
                   <button
-                    class="hidden btn delete-btn bg-red-400"
+                    class="hidden btn btn-danger delete-btn"
                     data-id={String(row.id)}
                   >
                     Eliminar
@@ -122,12 +122,12 @@ const totalPages = Math.max(1, Math.ceil(Number(count) / PAGE_SIZE));
 
       <div class="flex justify-center gap-2">
         {page > 1 && (
-          <a href={`/products?page=${page - 1}`} class="btn">
+          <a href={`/products?page=${page - 1}`} class="btn btn-rpimary">
             Anterior
           </a>
         )}
         {page < totalPages && (
-          <a href={`/products?page=${page + 1}`} class="btn">
+          <a href={`/products?page=${page + 1}`} class="btn btn-primary">
             Siguiente
           </a>
         )}

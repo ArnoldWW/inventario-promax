@@ -1,17 +1,15 @@
 ---
-import type { Product, Sale } from '@/types';
-import { formatCurrency, calculateTotalValue, formatDate } from '@/utils';
+import type { Product, Sale } from "@/types";
+import { formatCurrency, calculateTotalValue, formatDate } from "@/utils";
 
 interface Props {
-	product: Product,
-	sale: Sale
+  product: Product;
+  sale: Sale;
 }
 
 const { product, sale } = Astro.props as Props;
 
-const saleDate = sale
-  ? formatDate(sale.created_at)
-  : null;
+const saleDate = sale ? formatDate(sale.created_at) : null;
 
 const productValue = calculateTotalValue(
   String(product.status),
@@ -29,9 +27,7 @@ const profit = salePrice - productValue;
     PRODUCTO VENDIDO A {sale.customer_name}
   </p>
 
-  <h2>
-    Datos de la venta
-  </h2>
+  <h2>Datos de la venta</h2>
   <p>
     <strong>ID de la venta: </strong>
     {sale.id}
@@ -60,14 +56,15 @@ const profit = salePrice - productValue;
     {sale?.notes || "-"}
   </p>
 
-  <button id="cancel-sale" class="btn bg-red-500 my-3" data-id={sale.id}>
+  <button id="cancel-sale" class="btn btn-danger my-3" data-id={sale.id}>
     Cancelar venta
   </button>
 </div>
 
 <script>
   import { actions } from "astro:actions";
-  const cancelSaleButton = document.querySelector<HTMLButtonElement>("#cancel-sale");
+  const cancelSaleButton =
+    document.querySelector<HTMLButtonElement>("#cancel-sale");
 
   cancelSaleButton?.addEventListener("click", async () => {
     const confirmCancel = confirm(
@@ -93,7 +90,6 @@ const profit = salePrice - productValue;
       alert(data?.message || "Venta cancelada exitosamente");
       // Refresh the page to reflect the changes
       window.location.href = "/products";
-
     } catch (error) {
       console.error(error);
       alert("Ocurrió un error al cancelar la venta");

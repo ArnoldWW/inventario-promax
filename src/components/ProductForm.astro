@@ -103,7 +103,7 @@ const { product } = Astro.props as Props;
 
   {!product?.id && <ProductOriginFields />}
 
-  <button type="submit" class="btn my-2">
+  <button type="submit" class="btn btn-primary my-2">
     {product?.id ? "Modificar producto" : "Crear producto"}
   </button>
 </form>

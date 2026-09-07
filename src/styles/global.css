@@ -46,7 +46,15 @@
   }
 
   .btn {
-    @apply bg-blue-500 text-center text-white py-1 px-2 hover:bg-blue-600 cursor-pointer font-bold inline-block;
+    @apply text-center text-white py-1 px-2 hover:opacity-80 cursor-pointer font-bold inline-block;
+  }
+
+  .btn-primary {
+    @apply bg-blue-500;
+  }
+
+  .btn-danger {
+    @apply bg-red-500;
   }
 
   .link {

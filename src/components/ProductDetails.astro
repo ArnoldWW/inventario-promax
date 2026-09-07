@@ -1,9 +1,9 @@
 ---
-import type { Product } from '@/types';
-import { formatCurrency, calculateTotalValue, formatDate } from '@/utils';
+import type { Product } from "@/types";
+import { formatCurrency, calculateTotalValue, formatDate } from "@/utils";
 
 interface Props {
-	product: Product
+  product: Product;
 }
 
 const { product } = Astro.props as Props;
@@ -93,7 +93,7 @@ const { product } = Astro.props as Props;
     {formatDate(product.created_at)}
   </p>
 
-  <a href={`/products/${product.id}/edit`} class="btn">
+  <a href={`/products/${product.id}/edit`} class="btn btn-primary">
     Editar producto
   </a>
 </div>
