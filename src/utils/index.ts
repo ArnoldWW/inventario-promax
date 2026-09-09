@@ -30,3 +30,7 @@ export function formatDate(date: string) {
     timeStyle: "short"
   });
 }
+
+export function maskText(text: string, maskChar: string = "*") {
+  return text.slice(-4).padStart(String(text).length, maskChar);
+}

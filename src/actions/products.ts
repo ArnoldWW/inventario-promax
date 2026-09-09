@@ -110,19 +110,17 @@ export const products = {
     }
   }),
   delete: defineAction({
-    accept: "form",
     input: z.object({
       id: z.string().trim().min(1, "El ID es requerido")
     }),
-    handler: async (input, context) => {
+    handler: async (input) => {
       const { id } = input;
 
-      const { rows } = await turso.execute(
+      await turso.execute(
         "DELETE FROM products WHERE id = ?",
         [id]
       );
 
-      console.log(rows);
       return { success: true, message: "Producto eliminado exitosamente" };
     }
   })
