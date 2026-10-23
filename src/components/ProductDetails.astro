@@ -1,12 +1,13 @@
 ---
-import type { Product } from "@/types";
+import type { Product, Sale } from "@/types";
 import { formatCurrency, calculateTotalValue, formatDate } from "@/utils";
 
 interface Props {
   product: Product;
+  sale?: Sale;
 }
 
-const { product } = Astro.props as Props;
+const { product, sale } = Astro.props as Props;
 ---
 
 <div class="flex flex-col gap-2 my-2">
@@ -93,7 +94,13 @@ const { product } = Astro.props as Props;
     {formatDate(product.created_at)}
   </p>
 
-  <a href={`/products/${product.id}/edit`} class="btn btn-primary">
-    Editar producto
-  </a>
+  {!sale ?
+    <a href={`/products/${product.id}/edit`} class="btn btn-primary">
+      Editar producto
+    </a>
+  :
+    <p class="text-red-500">
+      No se puede editar el producto porque ya fue vendido.
+    </p>
+  }
 </div>

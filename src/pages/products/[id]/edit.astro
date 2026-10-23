@@ -1,5 +1,5 @@
 ---
-import { productSchema } from "@/types";
+import { productSchema, saleSchema } from "@/types";
 import DashLayout from "@/layouts/DashLayout.astro";
 import { turso } from "@/turso";
 import FormProduct from "@/components/ProductForm.astro";
@@ -16,6 +16,20 @@ const { rows } = await turso.execute("SELECT * FROM products WHERE id = ?", [
 const raw = rows[0];
 
 const product = raw ? productSchema.parse(raw) : undefined;
+
+if (product && product.id) {
+  // Query products table and sale table to get the sale of the product
+  const { rows: salesRows } = await turso.execute(
+    "SELECT * FROM sales WHERE product_id = ? LIMIT 1",
+    [product.id]
+  );
+
+  const rawSale = salesRows[0];
+  const sale = rawSale ? saleSchema.parse(rawSale) : undefined;
+  if(sale) {
+    return Astro.redirect(`/products/${product.id}/details`);
+  }
+}
 ---
 
 <DashLayout>

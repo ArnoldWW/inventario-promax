@@ -30,6 +30,7 @@ const { rows: salesRows } = await turso.execute(
 );
 const rawSale = salesRows[0];
 const sale = rawSale ? saleSchema.parse(rawSale) : undefined;
+console.log(sale);
 ---
 
 <DashLayout>
@@ -38,7 +39,7 @@ const sale = rawSale ? saleSchema.parse(rawSale) : undefined;
     <div>
       <h2>Detalles del producto</h2>
 
-      <ProductDetails product={product} />
+      <ProductDetails product={product} sale={sale} />
     </div>
 
     <div class="flex flex-col gap-2 my-2">
